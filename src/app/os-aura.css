@@ -1,0 +1,177 @@
+/* ==========================================================================
+   Aura layer: ambient light, grain, springy windows and playful motion.
+   ========================================================================== */
+
+.d-os {
+  --aura-x: 0;
+  --aura-y: 0;
+}
+
+/* Wallpaper reacts to the pointer (very subtle, GPU only). */
+.d-os .d-wall {
+  transform: translate3d(calc(var(--aura-x) * 16px), calc(var(--aura-y) * 16px), 0) scale(1.055);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.d-os .d-wall video,
+.d-os .d-wall img {
+  transform: scale(1.01);
+}
+
+/* Cursor light */
+.d-aura-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--d-accent) 22%, transparent) 0%,
+    transparent 62%
+  );
+  will-change: transform;
+  opacity: 0.5;
+  transition: opacity 0.4s ease;
+}
+
+/* Film grain over everything, extremely subtle */
+.d-os::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.6'/></svg>");
+  background-size: 160px 160px;
+}
+
+/* Springier windows */
+.d-window {
+  animation: d-window-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.65);
+}
+
+@keyframes d-window-in {
+  from {
+    opacity: 0;
+    transform: scale(0.975) translateY(10px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Desktop icons cascade in */
+.d-icon {
+  animation: d-icon-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 38ms);
+}
+
+@keyframes d-icon-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Dock magnification */
+.d-dock-item {
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.18s ease;
+}
+
+.d-dock-item:hover {
+  transform: translateY(-9px) scale(1.16);
+}
+
+.d-dock-item:hover + .d-dock-item,
+.d-dock-item:has(+ .d-dock-item:hover) {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* Glass sheen on cards */
+.d-widget,
+.d-side-card,
+.d-link,
+.d-wp-card,
+.d-gateway-card,
+.d-signin-card {
+  background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 46%);
+}
+
+.d-widget:hover,
+.d-link:hover {
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.55), 0 0 0 1px color-mix(in srgb, var(--d-accent) 35%, transparent);
+}
+
+/* Animated conic ring around the avatar */
+.d-signin-avatar,
+.d-avatar {
+  position: relative;
+}
+
+.d-signin-avatar::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent, var(--d-accent), transparent 55%);
+  animation: d-spin 6s linear infinite;
+  opacity: 0.75;
+  z-index: -1;
+}
+
+/* Toast glow */
+.d-toast {
+  border-color: color-mix(in srgb, var(--d-accent) 40%, var(--d-line));
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7), 0 0 24px color-mix(in srgb, var(--d-accent) 22%, transparent);
+}
+
+/* Hover lift on primary buttons */
+.d-btn.primary,
+.ps5-play,
+.x-btn.primary {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.d-btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--d-accent) 35%, transparent);
+}
+
+/* Aurora sweep behind the desktop widgets */
+.d-widgets::before {
+  content: "";
+  position: absolute;
+  inset: -40px -30px auto -30px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--d-accent) 22%, transparent), transparent 70%);
+  filter: blur(40px);
+  z-index: -1;
+  animation: d-aura-breathe 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes d-aura-breathe {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d-os .d-wall { transform: none; }
+  .d-icon, .d-window, .d-widgets::before, .d-signin-avatar::after { animation: none; }
+  .d-aura-glow { display: none; }
+}

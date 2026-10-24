@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dounia OS v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Chakra+Petch:wght@400;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --line:#2a2a33; --line-soft:#1d1d24; --text:#f4f4f5; --muted:#a1a1aa; --dim:#71717a;
+    --accent:#a855f7; --display:"Chakra Petch",sans-serif; --logo:"Audiowide",sans-serif; --ui:"Rajdhani",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#050506;color:var(--text);font-family:var(--ui);font-weight:600;overflow:hidden;height:100vh;user-select:none}
+  button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  input{font-family:inherit;color:inherit}
+  ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:#34343d;border-radius:99px}
+  .wall{position:fixed;inset:0;overflow:hidden;background:#050506}
+  .wall video,.wall img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .wall::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 0%,rgba(0,0,0,.15),rgba(0,0,0,.55) 60%,rgba(0,0,0,.85))}
+
+  /* ---------- splash ---------- */
+  #splash{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:radial-gradient(70% 60% at 20% 20%,#1a0b2e,#05060a 60%,#020304);transition:opacity .6s ease}
+  #splash.out{opacity:0;pointer-events:none}
+  .sp-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(168,85,247,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(168,85,247,.12) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(70% 60% at 50% 45%,#000 20%,transparent 85%)}
+  .sp-inner{position:relative;text-align:center}
+  .sp-inner h1{font-family:var(--logo);font-size:clamp(2rem,7vw,4.2rem);letter-spacing:.06em;color:#fff;text-shadow:0 14px 50px rgba(168,85,247,.6);animation:in 1s cubic-bezier(.2,.8,.2,1) both}
+  .sp-inner h1 b{color:var(--accent);font-weight:400;margin-left:12px}
+  .sp-line{position:relative;width:min(240px,50vw);height:2px;margin:26px auto 0;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+  .sp-line i{position:absolute;inset:0;width:38%;border-radius:99px;background:linear-gradient(90deg,transparent,#a855f7,#22d3ee,transparent);animation:scan 1.6s cubic-bezier(.4,0,.2,1) infinite}
+  @keyframes scan{from{transform:translateX(-120%)}to{transform:translateX(340%)}}
+  @keyframes in{from{opacity:0;transform:translateY(26px);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+
+  /* ---------- login ---------- */
+  #login{position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0}
+  #login .wall{filter:blur(16px) saturate(.9);transform:scale(1.06)}
+  #login .login-bg{background:radial-gradient(55% 60% at 22% 18%,rgba(168,85,247,.6),transparent 62%),radial-gradient(45% 50% at 78% 30%,rgba(34,211,238,.4),transparent 66%),radial-gradient(55% 50% at 55% 85%,rgba(124,58,237,.55),transparent 68%),#05040a;animation:loginbg 22s ease-in-out infinite alternate}
+  @keyframes loginbg{0%{transform:scale(1.08) translate3d(0,0,0);filter:blur(14px) hue-rotate(0deg)}50%{transform:scale(1.16) translate3d(-2%,2%,0);filter:blur(18px) hue-rotate(16deg)}100%{transform:scale(1.1) translate3d(2%,-2%,0);filter:blur(15px) hue-rotate(-12deg)}}
+  #login .scrim{position:absolute;inset:0;background:radial-gradient(70% 60% at 50% 40%,rgba(12,8,24,.3),rgba(3,3,6,.88))}
+  .brand{position:absolute;top:32px;left:40px;z-index:3;display:flex;gap:12px;align-items:baseline}
+  .brand b{font-family:var(--logo);font-size:1.05rem;letter-spacing:.18em;text-shadow:0 0 28px rgba(168,85,247,.55)}
+  .brand span{font-family:var(--display);font-size:.56rem;letter-spacing:.24em;color:var(--muted);text-transform:uppercase}
+  .card{position:relative;z-index:3;width:min(380px,calc(100vw - 40px));padding:28px 28px 20px;border-radius:18px;background:rgba(14,14,19,.84);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(30px);box-shadow:0 40px 90px rgba(0,0,0,.7);text-align:center}
+  .avatar{width:86px;height:86px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;font-family:var(--logo);font-size:2rem;background:linear-gradient(150deg,#a855f7,#4c1d95 70%);box-shadow:0 18px 40px rgba(76,29,149,.55)}
+  .aura{position:relative;width:118px;height:118px;margin:0 auto 16px;display:grid;place-items:center}
+  .aura img{width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid rgba(255,255,255,.18);box-shadow:0 18px 50px rgba(88,28,135,.7);position:relative;z-index:1}
+  .aura::before{content:"";position:absolute;inset:-9px;border-radius:50%;background:conic-gradient(from 0deg,#a855f7,#22d3ee,#ec4899,#a855f7);filter:blur(9px);opacity:.85;animation:spin 7s linear infinite}
+  .aura.noimg img{display:none}
+  .aura.noimg::after{content:"D";position:absolute;font-family:var(--logo);font-size:2rem;color:#fff}
+  .enter{width:100%;height:48px;border-radius:999px;font-family:var(--display);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .card h1{font-family:var(--display);font-size:1.3rem;letter-spacing:.05em;margin-bottom:4px}
+  .card p.sub{font-size:.74rem;color:var(--muted);margin-bottom:18px}
+  .field{height:42px;width:100%;padding:0 14px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-bottom:2px solid var(--accent);outline:none;font-size:.88rem;margin-bottom:10px}
+  .row{display:flex;gap:8px;margin-top:6px}
+  .btn{flex:1;padding:11px 14px;border-radius:9px;border:1px solid var(--line);background:#16161d;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.18s}
+  .btn:hover{border-color:#5b5b67;background:#1f1f28}
+  .btn.primary{background:#fafafa;border-color:#fafafa;color:#09090b}
+  .btn.primary:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+  .hint{margin-top:14px;font-size:.64rem;color:var(--dim);line-height:1.5}
+  .foot{position:absolute;bottom:24px;left:0;right:0;z-index:3;display:flex;justify-content:center;gap:18px;font-size:.7rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+
+  /* ---------- desktop ---------- */
+  #os{display:none;position:fixed;inset:0}
+  .hud{position:absolute;top:4vh;left:50%;transform:translateX(-50%);font-family:var(--display);font-size:2rem;letter-spacing:.3em;color:rgba(255,255,255,.42);text-transform:uppercase;pointer-events:none}
+  .tray{position:absolute;top:16px;right:20px;z-index:6;display:flex;align-items:center;gap:8px;padding:6px 10px 6px 14px;border-radius:999px;background:rgba(10,10,13,.62);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(18px)}
+  .tray b{font-size:.8rem;font-variant-numeric:tabular-nums}
+  .tray small{font-size:.58rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;display:block}
+  .tbtn{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;font-size:13px}
+  .tbtn:hover{background:rgba(255,255,255,.12)}
+  .icons{position:absolute;inset:0;display:grid;grid-template-columns:repeat(auto-fill,92px);grid-auto-rows:104px;align-content:start;gap:6px;padding:88px 20px 90px;overflow:auto}
+  .icon{display:flex;flex-direction:column;align-items:center;gap:7px;padding:9px 4px;border-radius:14px;transition:.16s}
+  .icon:hover{background:rgba(168,85,247,.18);outline:1px solid rgba(168,85,247,.4)}
+  .icon img{width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,.6))}
+  .icon span{font-size:.7rem;text-align:center;line-height:1.15;text-shadow:0 2px 6px #000}
+  .widgets{position:absolute;top:78px;right:20px;width:300px;display:flex;flex-direction:column;gap:10px;z-index:5;max-height:calc(100vh - 180px);overflow:auto}
+  .widget{padding:14px 16px;border-radius:16px;background:rgba(10,10,14,.64);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(22px)}
+  .widget .lbl{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.66)}
+  .widget .big{font-family:var(--display);font-size:2.4rem;line-height:1.1;margin-top:4px}
+  .widget .sub{font-size:.7rem;color:var(--muted)}
+  .widget ul{list-style:none;margin-top:8px;display:flex;flex-direction:column;gap:6px}
+  .widget li button{display:flex;width:100%;gap:8px;align-items:center;font-size:.76rem;text-align:left}
+  .widget li small{display:block;padding-left:18px;font-size:.62rem;color:var(--muted)}
+  .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px #22c55e;margin-left:auto}
+  .dock{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:40;display:flex;gap:8px;align-items:center;padding:8px 12px;border-radius:18px;background:rgba(9,9,12,.84);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(22px);box-shadow:0 20px 50px rgba(0,0,0,.65)}
+  .dock .d{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;position:relative;transition:.16s}
+  .dock .d:hover{transform:translateY(-6px);background:rgba(255,255,255,.1)}
+  .dock .d img{width:30px;height:30px;object-fit:contain}
+  .dock .tip{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:.6rem;background:#14141a;border:1px solid var(--line);padding:4px 8px;border-radius:7px;opacity:0;transition:.16s}
+  .dock .d:hover .tip{opacity:1}
+  .win{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;background:#08080a;animation:fade .25s ease both}
+  .win.hidden{display:none}
+  .wbar{height:52px;display:flex;align-items:center;gap:12px;padding:0 14px;background:rgba(12,12,16,.97);border-bottom:1px solid var(--line)}
+  .wbar img{width:24px;height:24px;object-fit:contain}
+  .wbar strong{font-size:.76rem;letter-spacing:.1em;text-transform:uppercase}
+  .wbar .tools{margin-left:auto;display:flex;gap:6px}
+  .tool{height:30px;padding:0 11px;border-radius:8px;border:1px solid var(--line);background:#14141a;font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:#c9c9d1}
+  .tool:hover{background:#fff;color:#000;border-color:#fff}
+  .wbody{flex:1;position:relative;display:flex;overflow:hidden}
+  .wbody iframe{flex:1;border:0;background:#fff}
+  .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px;text-align:center}
+  .center img{width:60px;height:60px;object-fit:contain}
+  .center h2{font-family:var(--display);font-size:1.05rem;letter-spacing:.1em}
+  .center p{max-width:480px;font-size:.84rem;line-height:1.6;color:var(--muted);font-weight:500}
+
+  /* ---------- wallpaper modal ---------- */
+  #wp{position:fixed;inset:0;z-index:300;display:none;place-items:center;padding:24px;background:rgba(3,3,5,.72);backdrop-filter:blur(16px)}
+  #wp.open{display:grid}
+  .panel{width:min(980px,100%);max-height:86vh;display:flex;flex-direction:column;background:#0b0b0f;border:1px solid var(--line);border-radius:20px;overflow:hidden}
+  .phead{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+  .phead h2{font-family:var(--display);font-size:.86rem;letter-spacing:.2em;text-transform:uppercase}
+  .phead .sp{flex:1}
+  .tabs{display:flex;gap:7px;padding:12px 20px;overflow:auto;border-bottom:1px solid var(--line-soft)}
+  .chip{padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:#12121a;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  .chip.on{background:#fff;color:#09090b;border-color:#fff}
+  .wgrid{flex:1;overflow:auto;padding:16px 20px 22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:12px;align-content:start}
+  .wpcard{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid var(--line-soft);background:#08080b;cursor:pointer}
+  .wpcard:hover{border-color:#4b4b57}
+  .wpcard.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .wpcard img,.wpcard video,.wpcard .grad{width:100%;height:100%;object-fit:cover;display:block}
+  .wpcard .name{position:absolute;inset:auto 0 0 0;padding:16px 9px 7px;background:linear-gradient(to top,rgba(0,0,0,.92),transparent);font-size:.66rem;color:#fff}
+  .wpcard .star{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:7px;background:rgba(0,0,0,.55);font-size:12px;display:grid;place-items:center}
+  .pfoot{display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--line);flex-wrap:wrap}
+  .toast{position:fixed;right:20px;bottom:80px;z-index:500;display:flex;flex-direction:column;gap:8px}
+  .tst{width:280px;padding:11px 14px;border-radius:11px;background:rgba(14,14,19,.96);border:1px solid var(--line);font-size:.74rem;animation:fade .3s ease both}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+
+  /* ---------- personalities ---------- */
+  #os[data-theme="windows11"] .dock{left:12px;right:12px;width:auto;transform:none;justify-content:center;border-radius:10px}
+  #os[data-theme="macos"] .dock{border-radius:24px;padding:10px 16px;background:rgba(28,28,34,.62);backdrop-filter:blur(30px) saturate(1.4)}
+  #os[data-theme="macos"] .win{inset:38px 10px 10px 10px;border-radius:12px;overflow:hidden;border:1px solid #2f2f38}
+  #os[data-theme="macos"] .wbar{background:#1b1b21}
+  #os[data-theme="gamer"] .dock{border-radius:4px;clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px);box-shadow:0 0 30px rgba(168,85,247,.35)}
+  #os[data-theme="gamer"] .wbar{background:linear-gradient(180deg,rgba(30,12,48,.96),rgba(12,8,18,.96))}
+  @media(max-width:1000px){.widgets{display:none}}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-grid"></div>
+  <div class="sp-inner">
+    <h1>DOUNIA <b>OS</b></h1>
+    <div class="sp-line"><i></i></div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<section id="login">
+  <div class="wall login-bg"></div>
+  <div class="scrim"></div>
+  <div class="brand"><b>DOUNIA OS</b></div>
+  <div class="card">
+    <div class="aura"><img src="../avatars/dounia-car.webp" alt="Dounia" onerror="this.parentNode.classList.add('noimg')" /></div>
+    <h1 id="loginName">Dounia</h1>
+    <p class="sub">Bienvenida de nuevo</p>
+    <button class="btn primary enter" onclick="enter('user')">Entrar como Dounia</button>
+    <p class="hint">Sin contraseña · tu sesión vive solo en este navegador.</p>
+  </div>
+  <div class="foot"><span id="loginTime">--:--</span><span id="loginDate">Dounia OS v3</span></div>
+</section>
+
+<!-- DESKTOP -->
+<div id="os" data-theme="gamer">
+  <div class="wall" id="deskWall"></div>
+  <div class="hud" id="hudDay"></div>
+  <div class="tray">
+    <div><b id="clock">--:--</b><small id="today">—</small></div>
+    <button class="tbtn" onclick="openWallpapers()" title="Fondos">🖼️</button>
+    <button class="tbtn" onclick="cycleTheme()" title="Estilo del escritorio">🖥️</button>
+    <button class="tbtn" onclick="lock()" title="Bloquear">🔒</button>
+  </div>
+  <div class="icons" id="icons"></div>
+  <aside class="widgets">
+    <div class="widget"><span class="lbl">Hora local</span><div class="big" id="wClock">--:--</div><span class="sub" id="wDate">—</span></div>
+    <div class="widget"><div style="display:flex;align-items:center"><span class="lbl">Sistema</span><span class="dot"></span></div><div class="big" style="font-size:1rem;margin-top:6px">Dounia OS v3</div><span class="sub">Proxy propio en la versión web · aquí los enlaces abren en pestaña</span></div>
+    <div class="widget"><span class="lbl">Proxies</span><ul id="wProxies"></ul></div>
+  </aside>
+  <nav class="dock" id="dock"></nav>
+  <div id="windows"></div>
+</div>
+
+<!-- WALLPAPERS -->
+<div id="wp"><div class="panel">
+  <div class="phead"><h2>Estudio de fondos</h2><span class="sp"></span><button class="tool" onclick="closeWallpapers()">Cerrar</button></div>
+  <div class="tabs" id="wpTabs"></div>
+  <div class="wgrid" id="wpGrid"></div>
+  <div class="pfoot">
+    <button class="btn primary" onclick="applySelected()">Aplicar fondo</button>
+    <button class="btn" onclick="toggleFav()">★ Favorito</button>
+    <button class="btn" onclick="restoreOriginal()">Restaurar original</button>
+    <button class="btn" onclick="filterWalls('fav')">Solo favoritos</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- data ---------------- */
+const SI = (s,c) => `https://cdn.simpleicons.org/${s}/${c}`;
+const ICO = d => `https://icons.duckduckgo.com/ip3/${d}.ico`;
+const CDN = "https://cdn.jsdelivr.net/gh/nathanpikelny6-oss/CineOS@main/Videos/";
+const RAW = "https://raw.githubusercontent.com/nathanpikelny6-oss/CineOS/main/Videos/default.mp4";
+
+const APPS = [
+  {id:"astra",name:"Astra / Proxy",icon:ICO("drfrost.site"),url:"https://drfrost.site",emb:false},
+  {id:"proxyhub",name:"Proxy Hub",icon:ICO("croxyproxy.com"),url:"https://tungtunglab.nekoweb.org",emb:false},
+  {id:"ghostcloud",name:"GhostCloud",icon:ICO("cineby.tech"),url:"https://ghost-mathmulti.zeoghost.workers.dev",emb:false},
+  {id:"cineby",name:"Cineby",icon:ICO("cineby.tech"),url:"https://cineby.tech",emb:false},
+  {id:"cinera",name:"Cinera",icon:ICO("cinera.cfd"),url:"https://cinera.cfd",emb:false},
+  {id:"games",name:"HTML Games",icon:SI("playstation","FFFFFF"),url:"https://html5.gamedistribution.com/",emb:true},
+  {id:"racoon",name:"Racoon Cloud",icon:ICO("xbox.com"),url:"https://www.xbox.com/play",emb:false},
+  {id:"vmpc",name:"Virtual PC",icon:ICO("onworks.net"),url:"https://www.onworks.net/",emb:true},
+  {id:"snack",name:"Snack Expo",icon:ICO("expo.dev"),url:"https://snack.expo.dev/",emb:true},
+  {id:"google",name:"Google",icon:SI("google","4285F4"),url:"https://www.google.com/",emb:true},
+  {id:"brave",name:"Brave",icon:SI("brave","FB542B"),url:"https://search.brave.com/",emb:false},
+  {id:"ddg",name:"DuckDuckGo",icon:SI("duckduckgo","DE5833"),url:"https://duckduckgo.com/",emb:true},
+  {id:"pluto",name:"Pluto TV",icon:ICO("pluto.tv"),url:"https://pluto.tv/",emb:false},
+  {id:"youtube",name:"YouTube",icon:SI("youtube","FF0000"),url:"https://www.youtube.com/",emb:false},
+  {id:"twitch",name:"Twitch",icon:SI("twitch","9146FF"),url:"https://www.twitch.tv/",emb:false},
+  {id:"spotify",name:"Spotify",icon:SI("spotify","1DB954"),url:"https://open.spotify.com/",emb:false},
+  {id:"netflix",name:"Netflix",icon:SI("netflix","E50914"),url:"https://www.netflix.com/",emb:false},
+  {id:"plex",name:"Plex",icon:SI("plex","E5A00D"),url:"https://watch.plex.tv/",emb:false},
+  {id:"crunchy",name:"Crunchyroll",icon:SI("crunchyroll","F47521"),url:"https://www.crunchyroll.com/",emb:false},
+  {id:"prime",name:"Prime Video",icon:ICO("primevideo.com"),url:"https://www.primevideo.com/",emb:false},
+  {id:"disney",name:"Disney+",icon:ICO("disneyplus.com"),url:"https://www.disneyplus.com/",emb:false},
+  {id:"tubi",name:"Tubi",icon:ICO("tubitv.com"),url:"https://tubitv.com/",emb:false},
+  {id:"soundcloud",name:"SoundCloud",icon:SI("soundcloud","FF5500"),url:"https://soundcloud.com/",emb:false},
+  {id:"vimeo",name:"Vimeo",icon:SI("vimeo","1AB7EA"),url:"https://vimeo.com/",emb:false},
+  {id:"steam",name:"Steam",icon:ICO("store.steampowered.com"),url:"https://store.steampowered.com/",emb:false},
+  {id:"roblox",name:"Roblox",icon:ICO("roblox.com"),url:"https://www.roblox.com/",emb:false},
+  {id:"geforce",name:"GeForce NOW",icon:ICO("nvidia.com"),url:"https://play.geforcenow.com/",emb:false},
+  {id:"fortnite",name:"Fortnite",icon:ICO("fortnite.com"),url:"https://www.fortnite.com/",emb:false},
+  {id:"rocket",name:"Rocket League",icon:ICO("rocketleague.com"),url:"https://www.rocketleague.com/",emb:false},
+  {id:"xbox",name:"Xbox Cloud",icon:ICO("xbox.com"),url:"https://www.xbox.com/play",emb:false},
+  {id:"discord",name:"Discord",icon:SI("discord","5865F2"),url:"https://discord.com/app",emb:false},
+  {id:"photopea",name:"Photopea",icon:ICO("photopea.com"),url:"https://www.photopea.com/",emb:true},
+  {id:"excalidraw",name:"Excalidraw",icon:SI("excalidraw","6965DB"),url:"https://excalidraw.com/",emb:true},
+  {id:"wikipedia",name:"Wikipedia",icon:SI("wikipedia","FFFFFF"),url:"https://es.wikipedia.org/",emb:true},
+  {id:"archive",name:"Archive.org",icon:SI("internetarchive","FFFFFF"),url:"https://archive.org/",emb:true},
+  {id:"itch",name:"itch.io",icon:SI("itchdotio","FA5C5C"),url:"https://itch.io/games/free",emb:false},
+  {id:"wolf",name:"WolfUnblock",icon:ICO("sites.google.com"),url:"https://sites.google.com/view/wolfunblock/home",emb:false},
+  {id:"holy",name:"Holy Unblocker",icon:ICO("holyubofficial.net"),url:"https://holyubofficial.net",emb:false},
+  {id:"rammer",name:"Rammerhead",icon:ICO("rammerhead.org"),url:"https://rammerhead.org",emb:false},
+  {id:"croxy",name:"CroxyProxy",icon:ICO("croxyproxy.com"),url:"https://www.croxyproxy.com",emb:false}
+];
+
+const PROXIES = [
+  ["drfrost.site","https://drfrost.site"],
+  ["Tung Tung Lab","https://tungtunglab.nekoweb.org"],
+  ["Holy Unblocker","https://holyubofficial.net"],
+  ["Rammerhead","https://rammerhead.org"],
+  ["Aliyah","https://aliyah.pages.dev"],
+  ["CroxyProxy","https://www.croxyproxy.com"],
+  ["BlockAway","https://www.blockaway.net"],
+  ["hide.me","https://hide.me/en/proxy"],
+  ["ProxFree","https://www.proxfree.com"]
+];
+
+const CATS = {
+  cine:[["55Cine.PNG","Cine 55","image"]],
+  gaming:[["Minecraft01.mp4","Minecraft 01","video"],["Minecraft02.mp4","Minecraft 02","video"],["Minecraft03.mp4","Minecraft 03","video"],["Monkey.mp4","Monkey","video"]],
+  galaxias:[["BlackHole.mp4","Black Hole","video"],["Desktop.mp4","Desktop Lines","video"]],
+  neon:[["RainyCity.mp4","Rainy City","video"],["green.mp4","Green Anime","video"]],
+  paisajes:[["SnowFox.mp4","Snow Fox","video"],["CozyFox.mp4","Cozy Fox","video"],["Hunt.mp4","Hunt Showdown","video"]],
+  anime:[["Gojo.mp4","Gojo","video"],["Gojo-Sukuna.mp4","Gojo vs Sukuna","video"],["Yuji52.mp4","Yuji 52","video"],["Yuta.mp4","Yuta","video"],["sukuna-fire.mp4","Sukuna Fire","video"]],
+  tecnologia:[["F-1.mp4","F1","video"],["Brother.mp4","Brother","video"]],
+  noir:[["Supra.PNG","Supra Drift","image"],["33A56.mp4","Hunt Trait","video"],["99Med.mp4","99 Med","video"]],
+  cineos:[["45E33.mp4","45E33","video"],["Skello.MP4","Skello","video"],["92Med.MOV","92 Med","video"]]
+};
+const GRADS = [
+  ["Ultravioleta","radial-gradient(110% 110% at 85% 10%,#7c3aed 0%,#2a0f4d 42%,#05040a 100%)"],
+  ["Magenta frío","radial-gradient(90% 90% at 70% 20%,#e879f9 0%,#4c1d95 45%,#08060f 100%)"],
+  ["Cian profundo","radial-gradient(100% 100% at 20% 80%,#06b6d4 0%,#0e2a3d 40%,#04060a 100%)"],
+  ["Carbón morado","linear-gradient(135deg,#0b0713 0%,#241040 50%,#060409 100%)"],
+  ["Vacío","radial-gradient(100% 100% at 50% 50%,#14141a 0%,#09090c 55%,#000 100%)"]
+];
+
+/* ---------------- state ---------------- */
+const store = {
+  get(k, d){ try { const v = localStorage.getItem("dounia."+k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem("dounia."+k, JSON.stringify(v)); } catch(e){} }
+};
+let favorites = store.get("favs", []);
+let theme = store.get("theme", "gamer");
+let selectedWall = null, tab = "all";
+const WALLS = [];
+Object.entries(CATS).forEach(([cat, list]) => list.forEach(([file, name, type]) => WALLS.push({ id: cat+"-"+file, cat, name, type, src: CDN+file })));
+GRADS.forEach(([name, css], i) => WALLS.push({ id:"grad-"+i, cat:"gradientes", name, type:"gradient", src: css }));
+const ORIGINAL = { id:"original", cat:"cineos", name:"Snake Skeleton (original)", type:"video", src: RAW };
+
+/* ---------------- wallpaper engine ---------------- */
+function renderWall(el, wall){
+  if (!el || !wall) return;
+  el.innerHTML = "";
+  if (wall.type === "gradient") { el.style.background = wall.src; return; }
+  el.style.background = "#050506";
+  const node = document.createElement(wall.type === "video" ? "video" : "img");
+  node.src = wall.src;
+  if (wall.type === "video") { node.autoplay = true; node.loop = true; node.muted = true; node.playsInline = true; }
+  node.onerror = () => { el.style.background = "linear-gradient(135deg,#241040,#060409)"; };
+  el.appendChild(node);
+}
+function currentHome(){ const w = store.get("wallHome", null); return WALLS.find(x=>x.id===w) || GRADS.length && WALLS.find(x=>x.id==="grad-3") || WALLS[0]; }
+function applyWallpaper(wall){
+  renderWall(document.getElementById("deskWall"), wall);
+  store.set("wallHome", wall.id);
+  toast("Fondo aplicado", wall.name);
+}
+function restoreOriginal(){ renderWall(document.getElementById("deskWall"), ORIGINAL); store.set("wallHome","original"); toast("Fondo original","Snake Skeleton (CineOS)"); }
+
+function openWallpapers(){ document.getElementById("wp").classList.add("open"); renderTabs(); renderWalls(); }
+function closeWallpapers(){ document.getElementById("wp").classList.remove("open"); }
+function renderTabs(){
+  const tabs = [["all","Todos"],["fav","Favoritos"],["gradientes","Gradientes"],...Object.keys(CATS).map(c=>[c,c.replace(/^./,m=>m.toUpperCase())])];
+  document.getElementById("wpTabs").innerHTML = tabs.map(([id,label])=>`<button class="chip ${tab===id?"on":""}" onclick="filterWalls('${id}')">${label}</button>`).join("");
+}
+function filterWalls(id){ tab = id; renderTabs(); renderWalls(); }
+function renderWalls(){
+  const list = tab==="all" ? [ORIGINAL,...WALLS] : tab==="fav" ? [ORIGINAL,...WALLS].filter(w=>favorites.includes(w.id)) : WALLS.filter(w=>w.cat===tab);
+  const grid = document.getElementById("wpGrid");
+  grid.innerHTML = list.map(w=>{
+    const media = w.type==="gradient" ? `<div class="grad" style="background:${w.src}"></div>`
+      : w.type==="video" ? `<video src="${w.src}" muted loop playsinline preload="metadata" onmouseover="this.play()" onmouseout="this.pause()"></video>`
+      : `<img src="${w.src}" alt="${w.name}" loading="lazy">`;
+    const fav = favorites.includes(w.id);
+    return `<div class="wpcard ${selectedWall&&selectedWall.id===w.id?"on":""}" onclick="selectWall('${w.id}')">
+      ${media}<button class="star" onclick="event.stopPropagation();favWall('${w.id}')" style="color:${fav?"#fbbf24":"#fff"}">★</button><span class="name">${w.name}</span></div>`;
+  }).join("") || `<p style="color:#71717a;font-size:.8rem">Todavía no hay favoritos.</p>`;
+}
+function allWalls(){ return [ORIGINAL,...WALLS]; }
+function selectWall(id){ selectedWall = allWalls().find(w=>w.id===id); renderWalls(); }
+function favWall(id){
+  favorites = favorites.includes(id) ? favorites.filter(x=>x!==id) : [...favorites,id];
+  store.set("favs", favorites); renderWalls(); toast("Favoritos", favorites.includes(id) ? "Añadido" : "Quitado");
+}
+function toggleFav(){ if (selectedWall) favWall(selectedWall.id); }
+function applySelected(){ if (!selectedWall) { toast("Fondos","Elige un fondo primero"); return; } applyWallpaper(selectedWall); }
+
+/* ---------------- windows ---------------- */
+function openApp(id){
+  const app = APPS.find(a=>a.id===id);
+  if (!app) return;
+  const layer = document.getElementById("windows");
+  const el = document.createElement("section");
+  el.className = "win"; el.dataset.app = id;
+  el.innerHTML = `
+    <div class="wbar"><img src="${app.icon}" alt=""><strong>${app.name}</strong>
+      <div class="tools">
+        <a class="tool" href="${app.url}" target="_blank" rel="noreferrer">Abrir ↗</a>
+        <button class="tool" onclick="this.closest('.win').remove()">Cerrar ✕</button>
+      </div>
+    </div>
+    <div class="wbody">${app.emb
+      ? `<iframe src="${app.url}" title="${app.name}" allow="autoplay; fullscreen; gamepad; clipboard-write"></iframe>`
+      : `<div class="center"><img src="${app.icon}" alt=""><h2>${app.name}</h2>
+         <p>Esta web bloquea su incrustación. En este archivo (sin servidor) se abre en una pestaña. En la versión web de Dounia OS se carga con el proxy propio.</p>
+         <div class="row" style="max-width:320px"><a class="btn primary" href="${app.url}" target="_blank" rel="noreferrer">Abrir ahora</a>
+         <button class="btn" onclick="this.closest('.win').remove()">Volver</button></div></div>`}
+    </div>`;
+  layer.appendChild(el);
+  toast(app.name, app.emb ? "Cargando en la ventana" : "Se abre fuera del escritorio");
+}
+function renderApps(){
+  document.getElementById("icons").innerHTML = APPS.map(a=>`
+    <button class="icon" onclick="openApp('${a.id}')" title="${a.name}">
+      <img src="${a.icon}" alt="${a.name}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${a.name.slice(0,2)}',className:'ph'}))">
+      <span>${a.name}</span>
+    </button>`).join("");
+  document.getElementById("dock").innerHTML = APPS.slice(0,8).map(a=>`
+    <button class="d" onclick="openApp('${a.id}')"><img src="${a.icon}" alt=""><span class="tip">${a.name}</span></button>`).join("")
+    + `<button class="d" onclick="openWallpapers()"><span style="font-size:18px">🖼️</span><span class="tip">Fondos</span></button>`;
+  document.getElementById("wProxies").innerHTML = PROXIES.slice(0,4).map(([n,u])=>
+    `<li><button onclick="window.open('${u}','_blank')">↗ ${n}</button><small>${u.replace(/^https?:\/\//,"").split("/")[0]}</small></li>`).join("");
+}
+
+/* ---------------- clock + session ---------------- */
+const DAYS = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const MONTHS = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function tick(){
+  const d = new Date(), hh = String(d.getHours()).padStart(2,"0"), mm = String(d.getMinutes()).padStart(2,"0");
+  const time = hh+":"+mm, day = DAYS[d.getDay()].toUpperCase(), date = d.getDate()+" "+MONTHS[d.getMonth()]+" "+d.getFullYear();
+  ["clock","wClock","loginTime"].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=time; });
+  const todayEl=document.getElementById("today"); if(todayEl) todayEl.textContent=date.slice(0,12);
+  const hud=document.getElementById("hudDay"); if(hud) hud.textContent=day;
+  const wd=document.getElementById("wDate"); if(wd) wd.textContent=DAYS[d.getDay()]+" · "+date;
+  const ld=document.getElementById("loginDate"); if(ld) ld.textContent=date;
+}
+setInterval(tick, 15000);
+
+function enter(mode){
+  const name = mode==="guest" ? "Invitado" : "Dounia";
+  document.getElementById("login").style.display = "none";
+  document.getElementById("os").style.display = "block";
+  renderWall(document.getElementById("deskWall"), currentHome());
+  tick(); renderApps(); renderTabs(); applyTheme();
+  toast("Bienvenida, "+name, "Dounia OS v3 · escribe ? o pulsa 🖼️ para cambiar el fondo");
+}
+function lock(){
+  document.getElementById("os").style.display = "none";
+  const l = document.getElementById("login");
+  l.style.display = "flex";
+}
+function cycleTheme(){
+  const list = ["gamer","windows11","macos"];
+  theme = list[(list.indexOf(theme)+1) % list.length];
+  store.set("theme", theme); applyTheme();
+  toast("Estilo aplicado", theme==="gamer" ? "PC Gamer" : theme==="macos" ? "macOS" : "Windows 11");
+}
+function applyTheme(){ document.getElementById("os").dataset.theme = theme; }
+
+function toast(title, body){
+  const box = document.getElementById("toast");
+  const el = document.createElement("div");
+  el.className = "tst"; el.innerHTML = "<strong>"+title+"</strong><div style='color:#a1a1aa;font-size:.7rem;margin-top:3px'>"+body+"</div>";
+  box.appendChild(el);
+  setTimeout(()=>el.remove(), 4200);
+}
+
+window.addEventListener("keydown", e => { if (e.key === "Enter" && document.getElementById("login").style.display !== "none") enter("user"); });
+window.addEventListener("keydown", e => { if (e.key === "Escape") closeWallpapers(); });
+
+tick();
+
+const splash = document.getElementById("splash");
+setTimeout(() => { splash.classList.add("out"); setTimeout(() => splash.remove(), 700); }, 2700);
+</script>
+</body>
+</html>

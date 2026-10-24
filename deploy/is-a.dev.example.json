@@ -1,0 +1,9 @@
+{
+  "description": "Dounia OS — escritorio web con apps, juegos y modos consola/cine/móviles",
+  "owner": {
+    "username": "TU_USUARIO_DE_GITHUB"
+  },
+  "record": {
+    "CNAME": "TU-SERVICIO.onrender.com"
+  }
+}

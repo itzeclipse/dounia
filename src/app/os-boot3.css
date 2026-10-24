@@ -1,0 +1,342 @@
+/* ==========================================================================
+   Dounia OS · boot/splash v3 — cinematic preloader.
+   Layered aurora + starfield + drifting particle field, orbiting ring,
+   shimmering wordmark, live status line and a real progress bar.
+   ========================================================================== */
+
+.d-boot3 {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #030205;
+  cursor: pointer;
+  isolation: isolate;
+}
+
+/* ------------------------------------------------------------ background -- */
+
+.d-boot3-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #030205;
+}
+
+.d-boot3-bg .d-live { inset: -8%; }
+
+/* Keep the starfield additive over the aurora instead of covering it. */
+.d-boot3-bg .d-live-stars {
+  background-color: transparent;
+  mix-blend-mode: screen;
+  opacity: 0.55;
+}
+
+.d-boot3-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(72% 62% at 50% 46%, rgba(3, 2, 5, 0) 0%, rgba(3, 2, 5, 0.34) 58%, rgba(2, 1, 4, 0.88) 100%),
+    linear-gradient(180deg, rgba(3, 2, 5, 0.38) 0%, transparent 32%, transparent 68%, rgba(2, 1, 4, 0.62) 100%);
+}
+
+/* Volumetric light beams radiating from behind the wordmark. */
+.d-boot3-rays {
+  position: absolute;
+  inset: -22%;
+  background: conic-gradient(
+    from 0deg at 50% -12%,
+    transparent 0deg, rgba(168, 85, 247, 0.16) 8deg, transparent 20deg,
+    transparent 44deg, rgba(34, 211, 238, 0.11) 54deg, transparent 66deg,
+    transparent 128deg, rgba(168, 85, 247, 0.13) 140deg, transparent 152deg,
+    transparent 220deg, rgba(236, 72, 153, 0.1) 232deg, transparent 246deg,
+    transparent 316deg, rgba(34, 211, 238, 0.11) 330deg, transparent 342deg
+  );
+  filter: blur(2px);
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  animation: d-boot3-rays 30s linear infinite;
+}
+
+/* Soft beam that sweeps down over the whole screen. */
+.d-boot3-scan {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 0;
+  height: 42%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(168, 85, 247, 0.05) 42%,
+    rgba(34, 211, 238, 0.1) 50%,
+    rgba(168, 85, 247, 0.05) 58%,
+    transparent
+  );
+  animation: d-boot3-scan 7s ease-in-out infinite;
+}
+
+/* Living particle field (canvas). */
+.d-boot3-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------- ambient accents -- */
+
+.d-boot3-orb {
+  position: absolute;
+  z-index: 1;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.6;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.d-boot3-orb.a {
+  width: 46vw;
+  height: 46vw;
+  left: -8vw;
+  top: -10vw;
+  background: radial-gradient(circle, var(--d-accent, #a855f7), transparent 68%);
+  animation: d-boot3-orb-a 16s ease-in-out infinite alternate;
+}
+
+.d-boot3-orb.b {
+  width: 38vw;
+  height: 38vw;
+  right: -6vw;
+  bottom: -12vw;
+  background: radial-gradient(circle, #22d3ee, transparent 68%);
+  opacity: 0.45;
+  animation: d-boot3-orb-b 19s ease-in-out infinite alternate;
+}
+
+.d-boot3-ring {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(680px, 92vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(168, 85, 247, 0.55) 60deg,
+    transparent 130deg,
+    rgba(34, 211, 238, 0.45) 250deg,
+    transparent 360deg
+  );
+  -webkit-mask-image: radial-gradient(closest-side, transparent 76%, #000 80%, #000 84%, transparent 88%);
+  mask-image: radial-gradient(closest-side, transparent 76%, #000 80%, #000 84%, transparent 88%);
+  animation: d-boot3-spin 14s linear infinite;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------ wordmark -- */
+
+.d-boot3-inner {
+  position: relative;
+  z-index: 4;
+  text-align: center;
+  padding: 24px;
+}
+
+.d-boot3-logo {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.16em;
+  font-family: var(--d-font-logo);
+  font-size: clamp(2.6rem, 9vw, 6.2rem);
+  letter-spacing: 0.02em;
+  margin: 0;
+  color: #fff;
+  text-shadow: 0 24px 80px rgba(88, 28, 135, 0.7);
+}
+
+.d-boot3-word { display: inline-flex; }
+
+.d-boot3-word i {
+  font-style: normal;
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(32px) rotate(-6deg) scale(0.9);
+  animation: d-boot3-letter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  background: linear-gradient(180deg, #fff 0%, #e9d5ff 55%, var(--d-accent, #a855f7) 130%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 18px rgba(216, 180, 254, 0.5));
+}
+
+.d-boot3-os {
+  color: #a855f7;
+  font-size: 0.62em;
+  text-shadow: 0 0 34px rgba(168, 85, 247, 0.9), 0 0 90px rgba(34, 211, 238, 0.35);
+  animation: d-boot3-os-glow 3.2s ease-in-out infinite;
+}
+
+.d-boot3-shine {
+  position: absolute;
+  inset: -12% -22%;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.5) 48%, transparent 58%);
+  mix-blend-mode: overlay;
+  animation: d-boot3-shine 3.4s ease-in-out infinite;
+}
+
+.d-boot3-tagline {
+  margin: 20px 0 0;
+  font-family: var(--d-font-display);
+  font-size: 0.76rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(244, 244, 245, 0.96);
+  text-shadow: 0 2px 14px rgba(3, 2, 5, 0.95), 0 0 26px rgba(168, 85, 247, 0.55);
+  animation: d-boot3-fade 0.9s ease 0.5s both;
+}
+
+/* ---------------------------------------------------------- status + bar -- */
+
+.d-boot3-foot {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  z-index: 4;
+  width: min(560px, calc(100vw - 48px));
+}
+
+.d-boot3-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-bottom: 16px;
+  min-height: 1.2em;
+  font-family: var(--d-font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.85);
+}
+
+.d-boot3-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22d3ee;
+  box-shadow: 0 0 12px #22d3ee;
+  animation: d-boot3-pulse 1.2s ease-in-out infinite;
+}
+
+.d-boot3-progress {
+  position: relative;
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.d-boot3-progress i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #7c3aed, #a855f7, #22d3ee);
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.75);
+  transition: width 140ms linear;
+}
+
+.d-boot3-pct {
+  display: block;
+  margin-top: 10px;
+  text-align: right;
+  font-family: var(--d-font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: #e9d5ff;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------- keyframes -- */
+
+@keyframes d-boot3-letter {
+  to { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
+}
+
+@keyframes d-boot3-os-glow {
+  0%, 100% { text-shadow: 0 0 28px rgba(168, 85, 247, 0.7); }
+  50% { text-shadow: 0 0 60px rgba(168, 85, 247, 1), 0 0 120px rgba(34, 211, 238, 0.45); }
+}
+
+@keyframes d-boot3-shine {
+  0%, 100% { transform: translateX(-60%); opacity: 0; }
+  35% { opacity: 0.9; }
+  70% { transform: translateX(60%); opacity: 0; }
+}
+
+@keyframes d-boot3-fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes d-boot3-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+@keyframes d-boot3-orb-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(6vw, 4vw, 0) scale(1.15); }
+}
+
+@keyframes d-boot3-orb-b {
+  from { transform: translate3d(0, 0, 0) scale(1.1); }
+  to { transform: translate3d(-5vw, -4vw, 0) scale(0.95); }
+}
+
+@keyframes d-boot3-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes d-boot3-rays {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes d-boot3-scan {
+  0% { transform: translateY(-120%); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateY(320%); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d-boot3-orb,
+  .d-boot3-ring,
+  .d-boot3-rays,
+  .d-boot3-scan,
+  .d-boot3-shine,
+  .d-boot3-status-dot {
+    animation: none;
+  }
+  .d-boot3-word i { animation: none; opacity: 1; transform: none; }
+}

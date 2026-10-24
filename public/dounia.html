@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dounia OS v3</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Chakra+Petch:wght@600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{--line:#2a2a33;--soft:#1d1d24;--text:#f4f4f5;--muted:#a1a1aa;--dim:#71717a;--accent:#a855f7;
+    --display:"Chakra Petch",sans-serif;--logo:"Audiowide",sans-serif;--ui:"Rajdhani",system-ui,sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#050506;color:var(--text);font-family:var(--ui);font-weight:600;height:100vh;overflow:hidden;user-select:none}
+  button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  input{font-family:inherit;color:inherit}
+  ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:#34343d;border-radius:99px}
+  .wall{position:fixed;inset:0;overflow:hidden;background:radial-gradient(130% 120% at 78% 8%,#2a1140 0%,#150a22 32%,#07050b 62%,#010102 100%)}
+  .wall video,.wall img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
+  /* login */
+  #login{position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center}
+  #login .veil{position:absolute;inset:0;background:radial-gradient(70% 60% at 50% 40%,rgba(10,6,20,.4),rgba(2,2,4,.92))}
+  .brand{position:absolute;top:30px;left:38px;z-index:3;display:flex;gap:12px;align-items:baseline}
+  .brand b{font-family:var(--logo);font-size:1.05rem;letter-spacing:.18em;text-shadow:0 0 30px rgba(168,85,247,.5)}
+  .brand span{font-family:var(--display);font-size:.55rem;letter-spacing:.24em;color:var(--muted);text-transform:uppercase}
+  .card{position:relative;z-index:3;width:min(370px,calc(100vw - 40px));padding:28px;border-radius:18px;background:rgba(12,12,17,.86);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(30px);box-shadow:0 40px 90px rgba(0,0,0,.75);text-align:center}
+  .avatar{width:88px;height:88px;margin:0 auto 14px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(150deg,#a855f7,#4c1d95 70%);box-shadow:0 0 0 2px rgba(168,85,247,.55),0 18px 44px rgba(76,29,149,.6)}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .card h1{font-family:var(--display);font-size:1.28rem;letter-spacing:.05em;margin-bottom:4px}
+  .card p{font-size:.72rem;color:var(--muted);margin-bottom:16px}
+  .field{height:42px;width:100%;padding:0 14px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-bottom:2px solid var(--accent);outline:none;font-size:.88rem;margin-bottom:10px}
+  .row{display:flex;gap:8px}
+  .btn{padding:11px 14px;border-radius:9px;border:1px solid var(--line);background:#16161d;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+  .btn:hover{background:#1f1f28;border-color:#5b5b67}
+  .btn.primary{background:#fafafa;border-color:#fafafa;color:#09090b;flex:1}
+  .btn.primary:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+  .hint{margin-top:12px;font-size:.62rem;color:var(--dim);line-height:1.5}
+  /* desktop */
+  #os{display:none;position:fixed;inset:0}
+  .hud{position:absolute;top:4vh;left:50%;transform:translateX(-50%);font-family:var(--display);font-size:1.9rem;letter-spacing:.3em;color:rgba(255,255,255,.4);text-transform:uppercase}
+  .tray{position:absolute;top:16px;right:20px;z-index:6;display:flex;align-items:center;gap:8px;padding:6px 10px 6px 14px;border-radius:999px;background:rgba(10,10,13,.62);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(18px)}
+  .tray b{font-size:.8rem}.tray small{display:block;font-size:.56rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+  .tbtn{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px}
+  .tbtn:hover{background:rgba(255,255,255,.12)}
+  .icons{position:absolute;inset:0;display:grid;grid-template-columns:repeat(auto-fill,92px);grid-auto-rows:102px;align-content:start;gap:6px;padding:86px 18px 92px;overflow:auto}
+  .icon{display:flex;flex-direction:column;align-items:center;gap:7px;padding:9px 4px;border-radius:14px}
+  .icon:hover{background:rgba(168,85,247,.18);outline:1px solid rgba(168,85,247,.4)}
+  .icon img{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,.6))}
+  .icon span{font-size:.68rem;text-align:center;line-height:1.15;text-shadow:0 2px 6px #000}
+  .dock{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:40;display:flex;gap:8px;align-items:center;padding:8px 12px;border-radius:18px;background:rgba(9,9,12,.85);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(22px);box-shadow:0 20px 50px rgba(0,0,0,.65)}
+  .dock .d{width:42px;height:42px;display:grid;place-items:center;border-radius:12px}
+  .dock .d:hover{transform:translateY(-6px);background:rgba(255,255,255,.1)}
+  .dock img{width:30px;height:30px;object-fit:contain}
+  .win{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;background:#08080a}
+  .wbar{height:50px;display:flex;align-items:center;gap:12px;padding:0 14px;background:rgba(12,12,16,.97);border-bottom:1px solid var(--line)}
+  .wbar img{width:24px;height:24px}
+  .wbar strong{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}
+  .wbar .tools{margin-left:auto;display:flex;gap:6px}
+  .tool{padding:7px 11px;border-radius:8px;border:1px solid var(--line);background:#14141a;font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;color:#c9c9d1}
+  .tool:hover{background:#fff;color:#000;border-color:#fff}
+  .wbody{flex:1;display:flex;overflow:hidden}
+  .wbody iframe{flex:1;border:0;background:#fff}
+  .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px;text-align:center}
+  .center img{width:58px;height:58px}.center h2{font-family:var(--display);font-size:1rem}
+  .center p{max-width:460px;font-size:.82rem;line-height:1.6;color:var(--muted)}
+  /* wallpapers */
+  #wp{position:fixed;inset:0;z-index:300;display:none;place-items:center;padding:24px;background:rgba(3,3,5,.74);backdrop-filter:blur(16px)}
+  #wp.open{display:grid}
+  .panel{width:min(920px,100%);max-height:86vh;display:flex;flex-direction:column;background:#0b0b0f;border:1px solid var(--line);border-radius:20px;overflow:hidden}
+  .phead{display:flex;align-items:center;padding:15px 20px;border-bottom:1px solid var(--line)}
+  .phead h2{font-family:var(--display);font-size:.84rem;letter-spacing:.2em;text-transform:uppercase;flex:1}
+  .chips{display:flex;gap:7px;padding:12px 20px;overflow:auto;border-bottom:1px solid var(--soft)}
+  .chip{padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:#12121a;font-size:.64rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  .chip.on{background:#fff;color:#09090b;border-color:#fff}
+  .grid{flex:1;overflow:auto;padding:16px 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;align-content:start}
+  .wpcard{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid var(--soft);cursor:pointer;background:#08080b}
+  .wpcard img,.wpcard video,.wpcard .grad{width:100%;height:100%;object-fit:cover;display:block}
+  .wpcard.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .wpcard .nm{position:absolute;inset:auto 0 0 0;padding:16px 9px 7px;background:linear-gradient(to top,rgba(0,0,0,.92),transparent);font-size:.64rem}
+  .pfoot{display:flex;gap:8px;padding:13px 20px;border-top:1px solid var(--line);flex-wrap:wrap}
+  .toast{position:fixed;right:20px;bottom:80px;z-index:500;display:flex;flex-direction:column;gap:8px}
+  .tst{width:270px;padding:11px 13px;border-radius:11px;background:rgba(14,14,19,.96);border:1px solid var(--line);font-size:.72rem}
+  /* themes */
+  #os[data-theme="windows11"] .dock{left:12px;right:12px;width:auto;transform:none;justify-content:center;border-radius:10px}
+  #os[data-theme="macos"] .dock{border-radius:24px;padding:10px 16px;background:rgba(28,28,34,.62)}
+  #os[data-theme="macos"] .win{inset:38px 10px 10px;border-radius:12px;overflow:hidden;border:1px solid #2f2f38}
+  #os[data-theme="gamer"] .dock{border-radius:4px;clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px);box-shadow:0 0 30px rgba(168,85,247,.35)}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <div class="wall"></div><div class="veil"></div>
+  <div class="brand"><b>DOUNIA OS</b><span>v3 · build 3.0.1</span></div>
+  <div class="card">
+    <div class="avatar"><img src="avatars/dounia-car.webp" alt="Dounia" /></div>
+    <h1>Dounia</h1>
+    <p>Sesión local · elige cómo entrar</p>
+    <input class="field" id="pass" type="password" placeholder="Contraseña" />
+    <div class="row">
+      <button class="btn primary" onclick="enter()">Iniciar sesión</button>
+      <button class="btn" onclick="enter(true)">Invitado</button>
+    </div>
+    <p class="hint">Cualquier contraseña entra: este archivo es 100% local, nada se envía.</p>
+  </div>
+</section>
+
+<div id="os" data-theme="gamer">
+  <div class="wall" id="deskWall"></div>
+  <div class="hud" id="hud"></div>
+  <div class="tray">
+    <div><b id="clock">--:--</b><small id="today">—</small></div>
+    <button class="tbtn" onclick="openWp()" title="Fondos">🖼️</button>
+    <button class="tbtn" onclick="cycleTheme()" title="Estilo">🖥️</button>
+    <button class="tbtn" onclick="lock()" title="Bloquear">🔒</button>
+  </div>
+  <div class="icons" id="icons"></div>
+  <nav class="dock" id="dock"></nav>
+  <div id="windows"></div>
+</div>
+
+<div id="wp"><div class="panel">
+  <div class="phead"><h2>Fondos de Dounia</h2><button class="tool" onclick="closeWp()">Cerrar</button></div>
+  <div class="chips" id="chips"></div>
+  <div class="grid" id="grid"></div>
+  <div class="pfoot">
+    <button class="btn primary" onclick="applySel()">Aplicar fondo</button>
+    <button class="btn" onclick="restore()">Restaurar original</button>
+    <button class="btn" onclick="tab='fav';draw()">Solo favoritos</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const fav = d => "https://www.google.com/s2/favicons?domain=" + d + "&sz=128";
+const CDN = "https://cdn.jsdelivr.net/gh/nathanpikelny6-oss/CineOS@main/Videos/";
+const A = (n, d, u, emb) => ({ n, i: fav(d), u, emb: !!emb });
+
+const APPS = [
+  A("TikTok","tiktok.com","https://www.tiktok.com/"), A("Instagram","instagram.com","https://www.instagram.com/"),
+  A("X","x.com","https://x.com/"), A("Reddit","reddit.com","https://www.reddit.com/"),
+  A("Threads","threads.net","https://www.threads.net/"), A("Bluesky","bsky.app","https://bsky.app/"),
+  A("Snapchat","snapchat.com","https://web.snapchat.com/"), A("Pinterest","pinterest.com","https://www.pinterest.com/"),
+  A("LinkedIn","linkedin.com","https://www.linkedin.com/"), A("Telegram","telegram.org","https://web.telegram.org/"),
+  A("WhatsApp","whatsapp.com","https://web.whatsapp.com/"), A("Discord","discord.com","https://discord.com/app"),
+  A("YouTube","youtube.com","https://www.youtube.com/"), A("Twitch","twitch.tv","https://www.twitch.tv/"),
+  A("Kick","kick.com","https://kick.com/"), A("Netflix","netflix.com","https://www.netflix.com/"),
+  A("Prime Video","primevideo.com","https://www.primevideo.com/"), A("Disney+","disneyplus.com","https://www.disneyplus.com/"),
+  A("Max","max.com","https://www.max.com/"), A("Crunchyroll","crunchyroll.com","https://www.crunchyroll.com/"),
+  A("Pluto TV","pluto.tv","https://pluto.tv/"), A("Tubi","tubitv.com","https://tubitv.com/"),
+  A("Spotify","open.spotify.com","https://open.spotify.com/"), A("SoundCloud","soundcloud.com","https://soundcloud.com/"),
+  A("Bandcamp","bandcamp.com","https://bandcamp.com/"), A("Shazam","shazam.com","https://www.shazam.com/"),
+  A("ChatGPT","chat.openai.com","https://chat.openai.com/"), A("Claude","claude.ai","https://claude.ai/"),
+  A("Gemini","gemini.google.com","https://gemini.google.com/"), A("Perplexity","perplexity.ai","https://www.perplexity.ai/"),
+  A("Suno","suno.com","https://suno.com/"), A("Hugging Face","huggingface.co","https://huggingface.co/"),
+  A("HTML Games","playstation.com","https://html5.gamedistribution.com/",true),
+  A("Racoon Cloud","raccoongame.com","https://www.raccoongame.com"),
+  A("Xbox Cloud","xbox.com","https://www.xbox.com/play"),
+  A("GeForce NOW","nvidia.com","https://play.geforecenow.com".replace("geforecenow","geforcenow")),
+  A("Amazon Luna","amazon.com","https://luna.amazon.com"),
+  A("now.gg","now.gg","https://now.gg"), A("Antstream","antstream.com","https://www.antstream.com"),
+  A("Virtual PC","onworks.net","https://www.onworks.net/",true),
+  A("Snack Expo","expo.dev","https://snack.expo.dev/",true),
+  A("Figma","figma.com","https://www.figma.com/"), A("Canva","canva.com","https://www.canva.com/"),
+  A("Photopea","photopea.com","https://www.photopea.com/",true), A("Excalidraw","excalidraw.com","https://excalidraw.com/",true),
+  A("Unsplash","unsplash.com","https://unsplash.com/"), A("Dribbble","dribbble.com","https://dribbble.com/"),
+  A("GitHub","github.com","https://github.com/"), A("Stack Overflow","stackoverflow.com","https://stackoverflow.com/"),
+  A("Replit","replit.com","https://replit.com/"), A("Vercel","vercel.com","https://vercel.com/"),
+  A("Notion","notion.so","https://www.notion.so/"), A("Google Drive","drive.google.com","https://drive.google.com/"),
+  A("Gmail","mail.google.com","https://mail.google.com/"), A("Google Maps","maps.google.com","https://maps.google.com/"),
+  A("Wikipedia","wikipedia.org","https://es.wikipedia.org/",true), A("Archive","archive.org","https://archive.org/",true),
+  A("IMDb","imdb.com","https://www.imdb.com/"), A("Letterboxd","letterboxd.com","https://letterboxd.com/"),
+  A("MyAnimeList","myanimelist.net","https://myanimelist.net/"), A("Fandom","fandom.com","https://www.fandom.com/"),
+  A("Duolingo","duolingo.com","https://www.duolingo.com/"), A("Khan Academy","khanacademy.org","https://es.khanacademy.org/"),
+  A("Steam","store.steampowered.com","https://store.steampowered.com/"), A("Epic Games","store.epicgames.com","https://store.epicgames.com/"),
+  A("itch.io","itch.io","https://itch.io/games/free"), A("Chess.com","chess.com","https://www.chess.com/"),
+  A("Amazon","amazon.es","https://www.amazon.es/"), A("Wallapop","wallapop.com","https://es.wallapop.com/"),
+  A("Booking","booking.com","https://www.booking.com/"), A("Airbnb","airbnb.es","https://www.airbnb.es/"),
+  A("Glovo","glovoapp.com","https://glovoapp.com/"), A("TradingView","tradingview.com","https://www.tradingview.com/"),
+  A("Marca","marca.com","https://www.marca.com/"), A("ESPN","espn.com","https://www.espn.com/"),
+  A("drfrost (proxy)","drfrost.site","https://drfrost.site"),
+  A("Holy Unblocker","holyubofficial.net","https://holyubofficial.net"),
+  A("Rammerhead","rammerhead.org","https://rammerhead.org"),
+  A("CroxyProxy","croxyproxy.com","https://www.croxyproxy.com"),
+  A("Tung Tung Lab","nekoweb.org","https://tungtunglab.nekoweb.org"),
+  A("GhostCloud","cineby.tech","https://ghost-mathmulti.zeoghost.workers.dev"),
+  A("Cineby","cineby.tech","https://cineby.tech"), A("Cinera","cinera.cfd","https://cinera.cfd"),
+  A("WolfUnblock","sites.google.com","https://sites.google.com/view/wolfunblock/home")
+];
+
+const HARD = [["45E33.mp4","45E33"],["green.mp4","Green Anime"],["BlackHole.mp4","Black Hole"],["Gojo.mp4","Gojo"],["Yuta.mp4","Yuta"],["SnowFox.mp4","Snow Fox"],["RainyCity.mp4","Rainy City"],["Desktop.mp4","Desktop Lines"]];
+const WALLS = HARD.map(([f,n])=>({id:f,n,type:"video",src:CDN+f}))
+  .concat([["Cine 55","55Cine.PNG"],["Supra","Supra.PNG"]].map(([n,f])=>({id:f,n,type:"image",src:CDN+f})))
+  .concat([
+    ["Negro morado","radial-gradient(130% 120% at 78% 8%,#2a1140 0%,#150a22 32%,#07050b 62%,#010102 100%)"],
+    ["Grafito","radial-gradient(120% 120% at 12% 0%,#2b2b33 0%,#121216 45%,#050506 100%)"],
+    ["Ultravioleta","radial-gradient(110% 110% at 85% 10%,#7c3aed 0%,#2a0f4d 42%,#05040a 100%)"],
+    ["Carbón","linear-gradient(135deg,#0b0713,#241040 50%,#060409)"],
+    ["Vacío","radial-gradient(100% 100% at 50% 50%,#14141a,#09090c 55%,#000)"]
+  ].map(([n,c],i)=>({id:"g"+i,n,type:"gradient",src:c})));
+
+let sel = WALLS[0], tab = "all", theme = "gamer";
+
+function paint(el, w){
+  el.innerHTML = "";
+  if (w.type === "gradient") { el.style.background = w.src; return; }
+  el.style.background = "#050506";
+  const n = document.createElement(w.type === "video" ? "video" : "img");
+  n.src = w.src;
+  if (w.type === "video") { n.autoplay = n.loop = n.muted = true; n.playsInline = true; }
+  el.appendChild(n);
+}
+function enter(guest){
+  document.getElementById("login").style.display = "none";
+  document.getElementById("os").style.display = "block";
+  paint(document.getElementById("deskWall"), WALLS[WALLS.length - 5]);
+  buildIcons(); tick();
+  toast("Bienvenida, " + (guest ? "Invitada" : "Dounia"), "Dounia OS v3 · todo se guarda en este navegador");
+}
+function lock(){ document.getElementById("os").style.display = "none"; document.getElementById("login").style.display = "flex"; }
+function cycleTheme(){
+  const l = ["gamer","windows11","macos"];
+  theme = l[(l.indexOf(theme)+1)%3];
+  document.getElementById("os").dataset.theme = theme;
+  toast("Estilo", theme === "gamer" ? "PC Gamer" : theme === "macos" ? "macOS" : "Windows 11");
+}
+function buildIcons(){
+  document.getElementById("icons").innerHTML = APPS.map((a,i)=>
+    '<button class="icon" onclick="openApp(' + i + ')"><img src="' + a.i + '" alt="' + a.n + '" loading="lazy"><span>' + a.n + '</span></button>').join("");
+  document.getElementById("dock").innerHTML = APPS.slice(0,7).map((a,i)=>
+    '<button class="d" onclick="openApp(' + i + ')" title="' + a.n + '"><img src="' + a.i + '" alt=""></button>').join("");
+}
+function openApp(i){
+  const a = APPS[i];
+  const w = document.createElement("section");
+  w.className = "win";
+  w.innerHTML = '<div class="wbar"><img src="' + a.i + '" alt=""><strong>' + a.n + '</strong><div class="tools">' +
+    '<a class="tool" href="' + a.u + '" target="_blank" rel="noreferrer">Abrir ↗</a>' +
+    '<button class="tool" onclick="this.closest(\'.win\').remove()">Cerrar ✕</button></div></div>' +
+    '<div class="wbody">' + (a.emb
+      ? '<iframe src="' + a.u + '" title="' + a.n + '" allow="autoplay;fullscreen;gamepad"></iframe>'
+      : '<div class="center"><img src="' + a.i + '"><h2>' + a.n + '</h2><p>Esta web bloquea su incrustación. En este archivo se abre en una pestaña; en la versión web usa el proxy de Dounia.</p>' +
+        '<a class="btn primary" href="' + a.u + '" target="_blank" rel="noreferrer">Abrir ahora</a></div>') + '</div>';
+  document.getElementById("windows").appendChild(w);
+  toast(a.n, a.emb ? "Cargando dentro" : "Se abre fuera");
+}
+function openWp(){ document.getElementById("wp").classList.add("open"); drawChips(); draw(); }
+function closeWp(){ document.getElementById("wp").classList.remove("open"); }
+function drawChips(){
+  document.getElementById("chips").innerHTML = ['<button class="chip on" onclick="tab=\'all\';drawChips();draw()">Todos (' + WALLS.length + ')</button>'].join("");
+}
+function draw(){
+  document.getElementById("grid").innerHTML = WALLS.map((w,i)=>{
+    const m = w.type === "gradient" ? '<div class="grad" style="background:' + w.src + '"></div>'
+      : w.type === "video" ? '<video src="' + w.src + '" muted loop playsinline preload="metadata" onmouseover="this.play()" onmouseout="this.pause()"></video>'
+      : '<img src="' + w.src + '" alt="' + w.n + '" loading="lazy">';
+    return '<div class="wpcard" onclick="sel=' + i + ';draw()"><div class="grad" style="display:none"></div>' + m + '<span class="nm">' + w.n + '</span></div>';
+  }).join("");
+}
+function applySel(){
+  paint(document.getElementById("deskWall"), WALLS[sel]);
+  toast("Fondo aplicado", WALLS[sel].n);
+  closeWp();
+}
+function restore(){ paint(document.getElementById("deskWall"), WALLS[0]); toast("Fondo original", "Bucle de fábrica de CineOS"); }
+function toast(t, b){
+  const el = document.createElement("div");
+  el.className = "tst";
+  el.innerHTML = "<strong>" + t + "</strong><div style='color:#a1a1aa;font-size:.68rem;margin-top:3px'>" + b + "</div>";
+  document.getElementById("toast").appendChild(el);
+  setTimeout(()=>el.remove(), 4000);
+}
+const DAYS=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const MONTHS=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function tick(){
+  const d = new Date();
+  const t = String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+  document.getElementById("clock").textContent = t;
+  document.getElementById("today").textContent = d.getDate() + " " + MONTHS[d.getMonth()].slice(0,4);
+  document.getElementById("hud").textContent = DAYS[d.getDay()].toUpperCase();
+}
+setInterval(tick, 15000);
+document.getElementById("pass").addEventListener("keydown", e => { if (e.key === "Enter") enter(); });
+paint(document.querySelector("#login .wall"), WALLS[WALLS.length - 5]);
+tick();
+</script>
+</body>
+</html>

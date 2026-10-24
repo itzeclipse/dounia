@@ -1,0 +1,185 @@
+/* ==========================================================================
+   Intro v4 — detailed animated stage: photo backdrop, light rays, scanlines,
+   floating sparks and a breathing aura behind the wordmark.
+   ========================================================================== */
+
+.d-boot2 .d-boot2-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  filter: none;
+  transform: none;
+}
+
+/* the generated scene carries the detail, so the colour layer steps back */
+.d-boot2 .d-boot2-bg .d-live {
+  opacity: 0.45;
+  mix-blend-mode: screen;
+}
+
+/* Detailed generated scene, slowly drifting */
+.d-boot2-photo {
+  position: absolute;
+  inset: -6%;
+  background-image: url("/wallpapers/v4-aura-stage.webp");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.95;
+  animation: d-stage-drift 28s ease-in-out infinite alternate;
+  filter: saturate(1.12) contrast(1.06) brightness(1.04);
+}
+
+@keyframes d-stage-drift {
+  0% { transform: scale(1.02) translate3d(-1.2%, -0.8%, 0); }
+  100% { transform: scale(1.12) translate3d(1.4%, 1.2%, 0); }
+}
+
+/* Volumetric rays sweeping across the scene */
+.d-boot2-rays {
+  position: absolute;
+  inset: -40%;
+  background: conic-gradient(
+    from 0deg at 50% 45%,
+    transparent 0deg,
+    rgba(168, 85, 247, 0.22) 22deg,
+    transparent 48deg,
+    rgba(34, 211, 238, 0.16) 96deg,
+    transparent 130deg,
+    rgba(192, 38, 211, 0.18) 210deg,
+    transparent 250deg,
+    rgba(168, 85, 247, 0.16) 320deg,
+    transparent 360deg
+  );
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  animation: d-stage-spin 44s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes d-stage-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Fine scanlines + a light band travelling down */
+.d-boot2-scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.045) 0px,
+    rgba(255, 255, 255, 0.045) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  opacity: 0.5;
+}
+
+.d-boot2-scan::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22%;
+  background: linear-gradient(to bottom, transparent, rgba(168, 85, 247, 0.16), transparent);
+  animation: d-stage-band 7s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes d-stage-band {
+  0% { transform: translateY(-30%); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateY(520%); opacity: 0; }
+}
+
+/* Floating sparks */
+.d-boot2-sparks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.d-boot2-sparks i {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #e9d5ff;
+  box-shadow: 0 0 10px 2px rgba(168, 85, 247, 0.85);
+  opacity: 0;
+  animation: d-spark 9s ease-in-out infinite;
+}
+
+.d-boot2-sparks i:nth-child(1) { left: 12%; top: 68%; animation-delay: 0s; }
+.d-boot2-sparks i:nth-child(2) { left: 26%; top: 38%; animation-delay: 1.4s; animation-duration: 11s; }
+.d-boot2-sparks i:nth-child(3) { left: 44%; top: 76%; animation-delay: 2.6s; }
+.d-boot2-sparks i:nth-child(4) { left: 62%; top: 28%; animation-delay: 3.8s; animation-duration: 12s; }
+.d-boot2-sparks i:nth-child(5) { left: 78%; top: 62%; animation-delay: 5.1s; }
+.d-boot2-sparks i:nth-child(6) { left: 88%; top: 34%; animation-delay: 6.4s; animation-duration: 10s; }
+.d-boot2-sparks i:nth-child(7) { left: 36%; top: 20%; animation-delay: 7.6s; }
+.d-boot2-sparks i:nth-child(8) { left: 54%; top: 58%; animation-delay: 8.4s; animation-duration: 13s; }
+
+@keyframes d-spark {
+  0%, 100% { opacity: 0; transform: translateY(24px) scale(0.7); }
+  30% { opacity: 0.9; }
+  60% { opacity: 0.5; transform: translateY(-28px) scale(1.1); }
+  90% { opacity: 0; transform: translateY(-56px) scale(0.9); }
+}
+
+/* Depth vignette so the wordmark always wins */
+.d-boot2-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(62% 52% at 50% 46%, rgba(5, 4, 8, 0.05) 0%, rgba(5, 4, 8, 0.5) 66%, rgba(3, 2, 5, 0.88) 100%),
+    linear-gradient(180deg, rgba(3, 2, 5, 0.6) 0%, transparent 26%, transparent 74%, rgba(3, 2, 5, 0.8) 100%);
+  pointer-events: none;
+}
+
+/* Aura lettering: extra bloom + slow breathing */
+.d-boot2 .d-boot2-logo {
+  filter: drop-shadow(0 0 22px rgba(168, 85, 247, 0.55));
+}
+
+.d-boot2 .d-boot2-word i {
+  text-shadow:
+    0 0 18px rgba(255, 255, 255, 0.35),
+    0 0 46px rgba(168, 85, 247, 0.7),
+    0 0 110px rgba(124, 58, 237, 0.45);
+}
+
+.d-boot2 .d-boot2-os {
+  text-shadow: 0 0 26px rgba(192, 38, 211, 0.9), 0 0 80px rgba(34, 211, 238, 0.35);
+}
+
+.d-boot2 .d-boot2-ring {
+  animation: d-stage-spin 18s linear infinite, d-boot-ring-breathe 6s ease-in-out infinite;
+}
+
+@keyframes d-boot-ring-breathe {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.85; }
+}
+
+.d-boot2 .d-boot2-bar {
+  width: min(360px, 62vw);
+  height: 3px;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.35);
+}
+
+.d-boot2 .d-boot2-bar i {
+  background: linear-gradient(90deg, transparent, #a855f7 35%, #e9d5ff 50%, #22d3ee 70%, transparent);
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d-boot2-photo,
+  .d-boot2-rays,
+  .d-boot2-scan::after,
+  .d-boot2-sparks i,
+  .d-boot2 .d-boot2-ring {
+    animation: none;
+  }
+}

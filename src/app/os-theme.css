@@ -1,0 +1,1278 @@
+/* ==========================================================================
+   Dounia OS — tema global (modo claro + acento)
+   Debe cargarse DESPUÉS del resto de hojas del sistema: redefine los tokens
+   que usan todas las superficies, así el modo claro y el color de acento
+   afectan al sistema completo y no solo a unas cuantas ventanas.
+   ========================================================================== */
+
+/* ---------- modo claro: los tokens cambian para todo ---------- */
+.d-os[data-mode="light"] {
+  color-scheme: light;
+
+  --d-bg: #eceef4;
+  --d-panel: rgba(255, 255, 255, 0.94);
+  --d-panel-solid: #ffffff;
+  --d-glass: rgba(255, 255, 255, 0.76);
+  --d-line: #d3d6e2;
+  --d-line-soft: #e4e7f0;
+  --d-text: #12121a;
+  --d-muted: #565663;
+  --d-dim: #86868f;
+
+  background: #eceef4;
+  color: var(--d-text);
+}
+
+/* Superficies que usan grises escritos a mano en el tema oscuro. */
+.d-os[data-mode="light"] :is(
+  .d-win,
+  .d-win-body,
+  .d-drawer,
+  .d-drawer-grid,
+  .d-drawer-head,
+  .d-start,
+  .d-startmenu,
+  .d-panel,
+  .d-widget,
+  .d-tray,
+  .d-taskbar,
+  .d-dock,
+  .d-system-panel,
+  .d-context,
+  .d-appmenu,
+  .d-quick,
+  .d-proxybar,
+  .d-tabsbar,
+  .d-marksbar,
+  .d-bpanel,
+  .d-set,
+  .d-settings,
+  .d-ai,
+  .d-terminal,
+  .d-notes,
+  .d-files,
+  .d-monitor,
+  .d-calc
+) {
+  background-color: var(--d-panel-solid);
+  border-color: var(--d-line);
+  color: var(--d-text);
+}
+
+.d-os[data-mode="light"] :is(.d-win-bar, .d-drawer-head, .d-quick, .d-proxybar, .d-tabsbar) {
+  background: linear-gradient(180deg, #ffffff, #f2f3f8);
+  border-color: var(--d-line);
+}
+
+.d-os[data-mode="light"] :is(
+  .d-app-tile,
+  .d-tool,
+  .d-btn,
+  .d-chip,
+  .d-mark,
+  .d-bhome-tile,
+  .d-proxy-input,
+  .d-engine-select,
+  .d-drawer-search input,
+  .d-set input,
+  .d-set select
+) {
+  background: #ffffff;
+  border-color: var(--d-line);
+  color: var(--d-text);
+}
+
+.d-os[data-mode="light"] :is(.d-app-tile:hover, .d-tool:hover, .d-btn:hover, .d-chip:hover, .d-mark:hover) {
+  background: var(--d-accent);
+  border-color: var(--d-accent);
+  color: #fff;
+}
+
+.d-os[data-mode="light"] :is(
+  .d-app-tile span,
+  .d-icon-label,
+  .d-drawer-title,
+  .d-widget-strong,
+  .d-set-row strong,
+  .d-bhome h3,
+  .rcn-name,
+  .d-tab-label
+) {
+  color: var(--d-text);
+}
+
+.d-os[data-mode="light"] :is(.d-set-row small, .d-widget-label, .d-muted, .rcn-sub, .d-hint) {
+  color: var(--d-muted);
+}
+
+.d-os[data-mode="light"] .d-desktop {
+  color: var(--d-text);
+}
+
+.d-os[data-mode="light"] .d-win-frame {
+  background: #ffffff;
+}
+
+/* El fondo elegido por el usuario no se puede repintar, así que en modo claro
+   se levanta el brillo y se baja la saturación: el escritorio se lee claro sin
+   perder la foto que eligió. */
+/* La foto del usuario no se repinta: se le sube un poco la luz y se le pone un
+   velo blanco en degradado (arriba más denso, abajo más suave) para que los
+   iconos y las tarjetas se lean bien sin que la imagen quede gris. */
+.d-os[data-mode="light"] .d-wall {
+  filter: brightness(1.06) saturate(0.82);
+}
+
+.d-os[data-mode="light"] .d-wall::after {
+  background: linear-gradient(
+    to bottom,
+    rgba(250, 251, 255, 0.78),
+    rgba(240, 243, 251, 0.62) 40%,
+    rgba(233, 237, 247, 0.8)
+  );
+}
+
+.d-os[data-mode="light"] :is(.d-app-tile span, .d-icon-label, .d-dock-label) {
+  color: #14141c;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9), 0 0 12px rgba(255, 255, 255, 0.65);
+}
+
+.d-os[data-mode="light"] :is(.d-dock, .d-tray, .d-taskbar, .d-start) {
+  background: #ffffff;
+  border-color: var(--d-line);
+  box-shadow: 0 18px 44px rgba(22, 24, 44, 0.16), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.d-os[data-mode="light"] :is(.d-widget, .d-panel, .d-system-panel) {
+  background: #ffffff;
+  border-color: var(--d-line);
+  box-shadow: 0 14px 32px rgba(22, 24, 44, 0.1);
+}
+
+.d-os[data-mode="light"] .d-app-tile:hover {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.d-os[data-mode="light"] .d-day,
+.d-os[data-mode="light"] .d-hud {
+  color: #1b1b26;
+  text-shadow: 0 2px 18px rgba(255, 255, 255, 0.9);
+}
+
+.d-os[data-mode="light"] .d-day,
+.d-os[data-mode="light"] .d-hud,
+.d-os[data-mode="light"] .d-desktop-title {
+  color: rgba(20, 20, 28, 0.72);
+  text-shadow: 0 1px 12px rgba(255, 255, 255, 0.85);
+}
+
+/* ---------- el acento manda en todo el chrome ---------- */
+.d-os {
+  --d-accent-glow: color-mix(in srgb, var(--d-accent) 55%, transparent);
+  --d-accent-line: color-mix(in srgb, var(--d-accent) 42%, transparent);
+}
+
+.d-os :is(.d-btn.primary, .d-btn.on, .d-chip.on, .d-tool.on) {
+  background: var(--d-accent);
+  border-color: var(--d-accent);
+  color: #08080c;
+}
+
+.d-os :is(.d-btn.primary:hover, .d-tool.on:hover) {
+  filter: brightness(1.12);
+}
+
+.d-os :is(.d-app-tile:hover, .d-dock-item:hover, .d-drawer-tile:hover) {
+  border-color: var(--d-accent-line);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--d-accent-line) inset;
+}
+
+.d-os .d-dock {
+  border-color: var(--d-accent-line);
+  box-shadow: 0 0 34px var(--d-accent-glow), 0 22px 56px rgba(0, 0, 0, 0.55);
+}
+
+.d-os :is(.d-dock-start, .d-start-btn) {
+  background: var(--d-accent);
+  color: #08080c;
+}
+
+.d-os :is(.d-tab.on .d-tab-dot, .d-status-line i) {
+  background: var(--d-accent);
+  box-shadow: 0 0 10px var(--d-accent-glow);
+}
+
+.d-os :is(.d-swatch.on, .d-theme-swatch.on) {
+  box-shadow: 0 0 0 2px #fff, 0 0 18px var(--d-accent-glow);
+}
+
+.d-os ::selection {
+  background: var(--d-accent);
+  color: #08080c;
+}
+
+.d-os ::-webkit-scrollbar-thumb {
+  background: var(--d-accent-line);
+}
+
+.d-os ::-webkit-scrollbar-thumb:hover {
+  background: var(--d-accent);
+}
+
+/* Los títulos y brillos del escritorio también siguen el acento. */
+.d-os :is(.d-widget-strong, .d-drawer-title) {
+  color: var(--d-text);
+}
+
+.d-os :is(.d-hud, .d-day) {
+  color: var(--d-accent-line);
+}
+
+/* ---------- modo claro: texto sobre fondos activos ---------- */
+.d-os[data-mode="light"] :is(.d-btn.primary, .d-btn.on, .d-chip.on, .d-tool.on, .d-dock-start) {
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Visor de perfiles públicos (TikTok / Instagram / X)
+   ========================================================================== */
+
+.feed-app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #07070b;
+  color: #f4f4f5;
+}
+
+.feed-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0b0b12;
+  flex-wrap: wrap;
+}
+
+.feed-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.feed-brand strong {
+  display: block;
+  font-size: 0.76rem;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.feed-brand small {
+  display: block;
+  font-size: 0.58rem;
+  color: #8b93a7;
+  white-space: nowrap;
+}
+
+.feed-form {
+  flex: 1;
+  min-width: 190px;
+  display: flex;
+  gap: 6px;
+}
+
+.feed-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  outline: none;
+}
+
+.feed-form input:focus {
+  border-color: rgba(168, 85, 247, 0.6);
+}
+
+.feed-form button {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #fff;
+  color: #09090b;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.feed-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.feed-tabs button {
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #a1a1aa;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.feed-tabs button.on {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.feed-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.feed-frame {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: #000;
+}
+
+.feed-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: #000;
+}
+
+.feed-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  background: #08080d;
+  color: #94a3b8;
+  font-size: 0.72rem;
+}
+
+.feed-loading p {
+  margin: 0;
+}
+
+.feed-foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 7px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: #0b0b12;
+  color: #8b93a7;
+  font-size: 0.58rem;
+  line-height: 1.4;
+}
+
+.feed-foot .d-status-line {
+  flex: none;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.feed-foot > span:last-child {
+  text-align: right;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+@media (max-width: 720px) {
+  .feed-tabs {
+    order: 4;
+  }
+
+  .feed-actions {
+    margin-left: 0;
+  }
+
+  .feed-foot > span:last-child {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Visores nativos de TikTok / Instagram / X
+   ========================================================================== */
+
+.social-app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  color: #f4f4f5;
+  background: #07070b;
+  --social-accent: #25f4ee;
+  --social-accent-2: #fe2c55;
+}
+
+.social-tiktok {
+  --social-accent: #25f4ee;
+  --social-accent-2: #fe2c55;
+  background:
+    radial-gradient(70% 50% at 10% 0%, rgba(37, 244, 238, 0.12), transparent 60%),
+    radial-gradient(70% 50% at 90% 0%, rgba(254, 44, 85, 0.14), transparent 60%),
+    #05070a;
+}
+
+.social-instagram {
+  --social-accent: #e1306c;
+  --social-accent-2: #f9ce34;
+  background:
+    radial-gradient(60% 45% at 15% 0%, rgba(249, 206, 52, 0.12), transparent 60%),
+    radial-gradient(60% 45% at 90% 0%, rgba(98, 40, 215, 0.2), transparent 60%),
+    #0b0710;
+}
+
+.social-x {
+  --social-accent: #e7e9ea;
+  --social-accent-2: #1d9bf0;
+  background: #050607;
+}
+
+.social-top {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 8, 12, 0.94);
+  flex-wrap: wrap;
+}
+
+.social-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.social-brand strong {
+  display: block;
+  font-size: 0.78rem;
+  line-height: 1.1;
+}
+
+.social-brand small {
+  display: block;
+  font-size: 0.58rem;
+  color: var(--social-accent);
+  white-space: nowrap;
+}
+
+.social-form {
+  flex: 1;
+  min-width: 190px;
+  display: flex;
+  gap: 6px;
+}
+
+.social-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  outline: none;
+}
+
+.social-form input:focus {
+  border-color: color-mix(in srgb, var(--social-accent) 65%, transparent);
+}
+
+.social-form button {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--social-accent);
+  color: #05070a;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.social-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.social-actions button,
+.social-actions .open {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: #d4d4d8;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.social-actions button:hover,
+.social-actions .open:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.social-actions .open {
+  background: var(--social-accent);
+  border-color: transparent;
+  color: #05070a;
+}
+
+.social-actions .icon {
+  padding: 7px;
+}
+
+.social-actions svg {
+  width: 13px;
+  height: 13px;
+}
+
+.social-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.social-profile {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+}
+
+.social-avatar {
+  width: 76px;
+  height: 76px;
+  flex: none;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 30% 20%, var(--social-accent), #0b0b12 72%);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.16), 0 12px 30px rgba(0, 0, 0, 0.5);
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.social-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.social-identity {
+  min-width: 0;
+}
+
+.social-identity h2 {
+  margin: 0;
+  font-family: var(--d-font-display), sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.15;
+}
+
+.social-handle {
+  display: block;
+  margin-top: 1px;
+  font-size: 0.68rem;
+  color: var(--social-accent);
+}
+
+.social-identity p {
+  margin: 6px 0 4px;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: #b8b8c2;
+}
+
+.social-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--social-accent);
+  text-decoration: none;
+}
+
+.social-open svg {
+  width: 12px;
+  height: 12px;
+}
+
+.social-stats {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.social-stats span {
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8b93a7;
+  text-align: center;
+}
+
+.social-stats b {
+  display: block;
+  font-size: 0.92rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #fff;
+}
+
+.social-feedhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.social-feedhead h3 {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #e4e4e7;
+}
+
+.social-feedhead span {
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7d8698;
+}
+
+/* TikTok */
+
+.social-video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+  gap: 12px;
+}
+
+.social-video {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 14px;
+  background: rgba(10, 12, 16, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.social-video:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--social-accent) 55%, transparent);
+}
+
+.social-video-frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 9 / 16;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+}
+
+.social-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  display: block;
+}
+
+.social-video-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.56rem;
+  color: #94a3b8;
+}
+
+.social-video a {
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--social-accent);
+  text-decoration: none;
+}
+
+/* Instagram */
+
+.social-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 8px;
+}
+
+.social-photo {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #111018;
+  padding: 0;
+}
+
+.social-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.social-photo:hover img {
+  transform: scale(1.04);
+}
+
+.social-photo > span {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 28px 8px 8px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.92), transparent);
+  color: #fff;
+  font-size: 0.54rem;
+  line-height: 1.35;
+  text-align: left;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.social-photo:hover > span,
+.social-photo:focus-visible > span {
+  opacity: 1;
+}
+
+/* X */
+
+.social-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 760px;
+}
+
+.social-post {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0a0c10;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.social-post:hover {
+  background: #101318;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.social-post header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.6rem;
+  color: #8b98a5;
+}
+
+.social-post header strong {
+  color: #fff;
+  font-size: 0.68rem;
+}
+
+.social-post p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.social-post img {
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.social-post footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.56rem;
+  color: #8b98a5;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.social-empty {
+  margin: 0;
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  color: #9aa3b2;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+/* Web fallback */
+
+.social-web {
+  flex: 1;
+  min-height: 0;
+  background: #000;
+}
+
+.social-web iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: #000;
+}
+
+.social-web > p {
+  padding: 24px;
+  color: #9aa3b2;
+}
+
+/* Loading / error */
+
+.social-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.social-avatar-skeleton {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.06) 20%, rgba(255, 255, 255, 0.14) 40%, rgba(255, 255, 255, 0.06) 60%);
+  background-size: 200% 100%;
+  animation: social-shimmer 1.4s linear infinite;
+}
+
+.social-lines-skeleton {
+  display: block;
+  width: min(420px, 80%);
+  height: 46px;
+  border-radius: 8px;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.05) 20%, rgba(255, 255, 255, 0.1) 40%, rgba(255, 255, 255, 0.05) 60%);
+  background-size: 200% 100%;
+  animation: social-shimmer 1.4s linear infinite;
+}
+
+.social-grid-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.social-grid-skeleton span {
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.04) 20%, rgba(255, 255, 255, 0.09) 40%, rgba(255, 255, 255, 0.04) 60%);
+  background-size: 200% 100%;
+  animation: social-shimmer 1.4s linear infinite;
+}
+
+@keyframes social-shimmer {
+  from { background-position: 180% 0; }
+  to { background-position: -60% 0; }
+}
+
+.social-error {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.social-error strong {
+  font-size: 0.82rem;
+}
+
+.social-error p {
+  margin: 0;
+  font-size: 0.7rem;
+  color: #fecaca;
+}
+
+.social-error > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.social-error button,
+.social-error a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.social-error svg {
+  width: 12px;
+  height: 12px;
+}
+
+.social-foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 7px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(8, 8, 12, 0.94);
+  font-size: 0.55rem;
+  line-height: 1.4;
+  color: #7d8698;
+}
+
+.social-foot > span:last-child {
+  text-align: right;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+/* Lightbox de Instagram */
+
+.social-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr);
+  background: rgba(0, 0, 0, 0.93);
+  backdrop-filter: blur(12px);
+}
+
+.social-lightbox > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 24px;
+}
+
+.social-lightbox-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  justify-content: center;
+  padding: 28px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f4f4f5;
+}
+
+.social-lightbox-copy p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: #d4d4d8;
+}
+
+.social-lightbox-copy a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: #e1306c;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.social-lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.social-lightbox-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 760px) {
+  .social-profile {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .social-stats {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+
+  .social-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .social-photo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .social-video-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .social-lightbox {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .social-lightbox-copy {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 16px;
+  }
+
+  .social-foot > span:last-child {
+    display: none;
+  }
+
+  .social-actions button:not(.icon):not(.open) {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Sistema x300 — perfiles de energía y opciones nuevas
+   ========================================================================== */
+
+/* Desenfoque del fondo (solo el muro del escritorio, no el de bloqueo). */
+.d-os .d-desktop > .d-wall {
+  filter: blur(var(--d-wall-blur, 0px));
+}
+
+/* Luz nocturna: capa cálida por encima de todo, sin bloquear el puntero. */
+.d-nightlight {
+  position: fixed;
+  inset: 0;
+  z-index: 9400;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(255, 176, 96, 0.22), transparent 70%),
+    rgba(255, 132, 44, 0.14);
+  mix-blend-mode: soft-light;
+}
+
+/* Turbo x300: interacciones instantáneas y nada de capas caras. */
+.d-os[data-power="x300"] :is(.d-win, .d-icon, .d-tray-btn, .d-dock-item, .d-chip, .d-btn, .d-mini-btn) {
+  transition-duration: 0.1s !important;
+}
+
+.d-os[data-power="x300"] .d-aura-glow {
+  display: none;
+}
+
+.d-os[data-power="x300"] .d-wall-motion {
+  animation: none;
+}
+
+/* Eco: menos cristal repintándose en cada frame. */
+.d-os[data-power="eco"] :is(.d-widget, .d-tray, .d-system-panel, .d-win) {
+  backdrop-filter: blur(8px);
+}
+
+.d-os[data-power="x300"] .d-syshud b,
+.d-os[data-power="x300"] .d-widget-metrics b {
+  color: var(--d-accent);
+}
+
+/* Tarjetas de perfil dentro de Configuración. */
+.d-power-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 10px;
+  margin: 4px 0 12px;
+}
+
+.d-power-card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--d-line-soft);
+  background: color-mix(in srgb, var(--power-color) 7%, transparent);
+  color: var(--d-text);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.2s, box-shadow 0.2s;
+}
+
+.d-power-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--power-color) 55%, var(--d-line-soft));
+}
+
+.d-power-card.on {
+  border-color: var(--power-color);
+  background: color-mix(in srgb, var(--power-color) 15%, transparent);
+  box-shadow: 0 0 0 1px var(--power-color), 0 16px 40px -24px var(--power-color);
+}
+
+.d-power-tag {
+  font-family: var(--d-font-mono, ui-monospace, monospace);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--power-color);
+}
+
+.d-power-card strong {
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+}
+
+.d-power-card small {
+  font-size: 0.7rem;
+  line-height: 1.45;
+  color: var(--d-muted);
+}
+
+/* Logo de WolfUnblock en su directorio. */
+.d-dir-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.d-dir-logo {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #04120a;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  box-shadow: 0 10px 26px -14px rgba(34, 197, 94, 0.8);
+}
+
+.d-dir-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.d-dir-verified {
+  font-family: var(--d-font-mono, ui-monospace, monospace);
+  font-style: normal;
+  font-size: 0.52rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-left: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.14);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  vertical-align: middle;
+}

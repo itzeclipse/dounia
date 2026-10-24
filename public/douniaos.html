@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DOUNIAOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Chakra+Petch:wght@400;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --accent:#a855f7; --line:#2a2a33; --soft:#1b1b22; --text:#f4f4f5; --muted:#a1a1aa; --dim:#71717a;
+    --logo:"Audiowide",sans-serif; --display:"Chakra Petch",sans-serif; --ui:"Rajdhani",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:#050408;color:var(--text);font-family:var(--ui);font-weight:600;overflow:hidden;user-select:none}
+  button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  input{font-family:inherit;color:inherit}
+  ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:#34343d;border-radius:99px}
+
+  /* ---------- live aura background ---------- */
+  .aura-bg{position:fixed;inset:0;background:radial-gradient(120% 100% at 20% 0%,#1d0b33 0%,#0b0714 45%,#030205 100%);overflow:hidden}
+  .aura-bg i{position:absolute;display:block;border-radius:50%;filter:blur(70px);opacity:.55;animation:float 18s ease-in-out infinite}
+  .aura-bg i:nth-child(1){width:46vw;height:46vw;left:-8vw;top:-10vw;background:radial-gradient(circle,#7c3aed,transparent 65%)}
+  .aura-bg i:nth-child(2){width:38vw;height:38vw;right:-6vw;top:10vh;background:radial-gradient(circle,#06b6d4,transparent 65%);animation-delay:-6s;opacity:.32}
+  .aura-bg i:nth-child(3){width:52vw;height:52vw;left:25vw;bottom:-22vw;background:radial-gradient(circle,#c026d3,transparent 68%);animation-delay:-11s;opacity:.35}
+  .aura-bg::after{content:"";position:absolute;inset:0;background-image:linear-gradient(to right,rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.03) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(70% 60% at 50% 45%,#000 25%,transparent 85%)}
+  @keyframes float{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(3vw,2vh,0) scale(1.12)}}
+
+  /* ---------- splash ---------- */
+  #splash{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;transition:opacity .7s ease;background:#050408}
+  #splash::before{content:"";position:absolute;inset:-6%;background-image:url("wallpapers/v4-aura-stage.webp");background-size:cover;background-position:center;opacity:.8;animation:stage 28s ease-in-out infinite alternate}
+  #splash::after{content:"";position:absolute;inset:0;background:radial-gradient(58% 48% at 50% 46%,rgba(5,4,8,.2),rgba(5,4,8,.82) 62%,rgba(3,2,5,.96) 100%)}
+  @keyframes stage{from{transform:scale(1.03) translate(-1%,-1%)}to{transform:scale(1.13) translate(1.4%,1.2%)}}
+  #splash.out{opacity:0;pointer-events:none}
+  .sp{position:relative;text-align:center;padding:24px}
+  .sp-ring{position:absolute;left:50%;top:44%;translate:-50% -50%;width:min(460px,74vw);aspect-ratio:1;border-radius:50%;
+    background:conic-gradient(from 0deg,transparent 0deg,rgba(168,85,247,.85) 70deg,transparent 150deg,rgba(34,211,238,.7) 250deg,transparent 330deg);
+    filter:blur(12px);animation:spin 7s linear infinite;opacity:.65}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .sp h1{position:relative;font-family:var(--logo);font-size:clamp(2.1rem,7.4vw,4.6rem);letter-spacing:.06em;color:#fff;
+    text-shadow:0 0 24px rgba(168,85,247,.65),0 0 70px rgba(168,85,247,.45),0 0 130px rgba(34,211,238,.25)}
+  .sp h1 b{color:var(--accent);font-weight:400}
+  .sp p{position:relative;margin-top:14px;font-family:var(--display);font-size:.62rem;letter-spacing:.42em;text-transform:uppercase;color:#a78bfa}
+  .sp-line{position:relative;width:min(300px,58vw);height:2px;margin:26px auto 0;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+  .sp-line i{position:absolute;inset:0;width:38%;border-radius:99px;background:linear-gradient(90deg,transparent,#a855f7,#22d3ee,transparent);animation:scan 1.6s cubic-bezier(.4,0,.2,1) infinite}
+  @keyframes scan{from{transform:translateX(-120%)}to{transform:translateX(340%)}}
+
+  /* ---------- login ---------- */
+  #login{position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center}
+  #login.on{display:flex}
+  .brand{position:absolute;top:28px;left:36px;font-family:var(--logo);font-size:1rem;letter-spacing:.2em;text-shadow:0 0 26px rgba(168,85,247,.6)}
+  .brand b{color:var(--accent);font-weight:400}
+  .card{position:relative;z-index:3;width:min(360px,calc(100vw - 40px));padding:32px 26px 24px;border-radius:22px;
+    background:rgba(12,10,18,.72);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(26px);
+    box-shadow:0 40px 100px rgba(0,0,0,.7);text-align:center;animation:pop .5s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+  .pfp{position:relative;width:104px;height:104px;margin:0 auto 16px}
+  .pfp img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.25);position:relative;z-index:2}
+  .pfp span{position:relative;z-index:2;display:grid;place-items:center;width:100%;height:100%;border-radius:50%;
+    font-family:var(--logo);font-size:2rem;background:linear-gradient(150deg,#a855f7,#4c1d95)}
+  .pfp::before{content:"";position:absolute;inset:-9px;border-radius:50%;
+    background:conic-gradient(from 0deg,transparent,rgba(168,85,247,.95),transparent 55%,rgba(34,211,238,.8),transparent);
+    animation:spin 6s linear infinite;z-index:1}
+  .pfp::after{content:"";position:absolute;inset:-22px;border-radius:50%;
+    background:radial-gradient(circle,rgba(168,85,247,.5),transparent 68%);filter:blur(14px);animation:breathe 4.5s ease-in-out infinite;z-index:0}
+  @keyframes breathe{0%,100%{opacity:.55;transform:scale(.95)}50%{opacity:.95;transform:scale(1.1)}}
+  .card h1{font-family:var(--display);font-size:1.35rem;letter-spacing:.04em;margin-bottom:2px}
+  .card small{display:block;font-size:.68rem;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-bottom:22px}
+  .enter{width:100%;padding:13px 18px;border-radius:12px;background:#fafafa;color:#08060d;font-weight:800;
+    letter-spacing:.12em;text-transform:uppercase;font-size:.76rem;transition:.2s}
+  .enter:hover{background:var(--accent);color:#fff;box-shadow:0 16px 40px rgba(168,85,247,.45);transform:translateY(-1px)}
+  .foot{position:absolute;bottom:24px;left:0;right:0;display:flex;justify-content:center;gap:16px;font-size:.7rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+
+  /* ---------- desktop ---------- */
+  #os{display:none;position:fixed;inset:0}
+  #os.on{display:block}
+  .hud{position:absolute;top:3.6vh;left:50%;translate:-50% 0;font-family:var(--display);font-size:2rem;letter-spacing:.3em;
+    color:rgba(255,255,255,.36);text-transform:uppercase;pointer-events:none;text-shadow:0 10px 30px #000}
+  .tray{position:absolute;top:16px;right:20px;z-index:6;display:flex;align-items:center;gap:8px;padding:6px 10px 6px 14px;
+    border-radius:999px;background:rgba(10,8,14,.6);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(18px)}
+  .tray b{font-size:.8rem;font-variant-numeric:tabular-nums;display:block}
+  .tray small{font-size:.56rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+  .tbtn{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;font-size:13px}
+  .tbtn:hover{background:rgba(255,255,255,.14)}
+  .icons{position:absolute;inset:0;display:grid;grid-template-columns:repeat(auto-fill,90px);grid-auto-rows:102px;
+    align-content:start;gap:4px;padding:86px 20px 96px;overflow:auto}
+  .icon{display:flex;flex-direction:column;align-items:center;gap:7px;padding:9px 4px;border-radius:14px;transition:.16s}
+  .icon:hover{background:rgba(168,85,247,.18);box-shadow:inset 0 0 0 1px rgba(168,85,247,.45);transform:translateY(-2px)}
+  .icon img{width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,.6))}
+  .icon span{font-size:.68rem;text-align:center;line-height:1.15;text-shadow:0 2px 6px #000}
+  .widgets{position:absolute;top:78px;right:20px;width:296px;display:flex;flex-direction:column;gap:10px;z-index:5}
+  .widget{padding:14px 16px;border-radius:18px;background:rgba(10,8,14,.6);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(22px);
+    background-image:linear-gradient(150deg,rgba(255,255,255,.07),transparent 46%)}
+  .widget .lbl{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+  .widget .big{font-family:var(--display);font-size:2.4rem;line-height:1.1;margin-top:4px}
+  .widget .sub{font-size:.68rem;color:var(--muted)}
+  .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px #22c55e;margin-left:auto}
+  .dock{position:absolute;left:50%;bottom:14px;translate:-50% 0;z-index:40;display:flex;gap:8px;align-items:center;padding:8px 12px;
+    border-radius:18px;background:rgba(9,7,12,.82);border:1px solid rgba(168,85,247,.35);backdrop-filter:blur(22px);
+    box-shadow:0 20px 50px rgba(0,0,0,.65),0 0 30px rgba(168,85,247,.22)}
+  .dock .d{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;position:relative;transition:.18s}
+  .dock .d:hover{transform:translateY(-7px) scale(1.12);background:rgba(255,255,255,.1)}
+  .dock .d img{width:30px;height:30px;object-fit:contain}
+  .dock .tip{position:absolute;bottom:48px;left:50%;translate:-50% 0;white-space:nowrap;font-size:.6rem;background:#14101c;
+    border:1px solid var(--line);padding:4px 8px;border-radius:7px;opacity:0;transition:.16s}
+  .dock .d:hover .tip{opacity:1}
+  .win{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;background:#08070c;animation:win .3s cubic-bezier(.16,1,.3,1) both}
+  @keyframes win{from{opacity:0;transform:scale(.98) translateY(8px)}to{opacity:1;transform:none}}
+  .wbar{height:52px;display:flex;align-items:center;gap:12px;padding:0 14px;background:linear-gradient(180deg,rgba(32,14,50,.96),rgba(11,8,16,.96));border-bottom:1px solid rgba(168,85,247,.35)}
+  .wbar img{width:24px;height:24px;object-fit:contain}
+  .wbar strong{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase}
+  .wbar .tools{margin-left:auto;display:flex;gap:6px}
+  .tool{height:30px;padding:0 11px;border-radius:8px;border:1px solid var(--line);background:#14101c;font-size:.64rem;
+    letter-spacing:.08em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:#cbc9d4}
+  .tool:hover{background:#fff;color:#000;border-color:#fff}
+  .wbody{flex:1;position:relative;display:flex;overflow:hidden}
+  .wbody iframe{flex:1;border:0;background:#fff}
+  .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px;text-align:center}
+  .center img{width:62px;height:62px;object-fit:contain;filter:drop-shadow(0 10px 26px rgba(168,85,247,.5))}
+  .center h2{font-family:var(--display);font-size:1.05rem;letter-spacing:.1em}
+  .center p{max-width:480px;font-size:.84rem;line-height:1.6;color:var(--muted);font-weight:500}
+  .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .btn{padding:10px 18px;border-radius:10px;border:1px solid var(--line);background:#16121e;font-size:.7rem;letter-spacing:.08em;
+    text-transform:uppercase;font-weight:700;text-decoration:none;color:#e6e2ef;display:inline-flex;gap:7px;align-items:center}
+  .btn:hover{background:#201a2b}
+  .btn.primary{background:#fafafa;border-color:#fafafa;color:#09070d}
+  .btn.primary:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* wallpaper studio */
+  #wp{position:fixed;inset:0;z-index:300;display:none;place-items:center;padding:22px;background:rgba(4,3,7,.74);backdrop-filter:blur(16px)}
+  #wp.on{display:grid}
+  .panel{width:min(960px,100%);max-height:86vh;display:flex;flex-direction:column;background:#0b0910;border:1px solid var(--line);border-radius:20px;overflow:hidden}
+  .phead{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--line)}
+  .phead h2{font-family:var(--display);font-size:.84rem;letter-spacing:.2em;text-transform:uppercase}
+  .phead .sp{flex:1}
+  .tabs{display:flex;gap:7px;padding:12px 20px;overflow:auto;border-bottom:1px solid var(--soft)}
+  .chip{padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:#14101c;font-size:.65rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  .chip.on{background:#fff;color:#09070d;border-color:#fff}
+  .wgrid{flex:1;overflow:auto;padding:16px 20px 22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:12px;align-content:start}
+  .wpcard{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid var(--soft);cursor:pointer;transition:.2s}
+  .wpcard:hover{border-color:rgba(168,85,247,.72);transform:translateY(-3px)}
+  .wpcard.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 14px 30px rgba(168,85,247,.3)}
+  .wpcard .sw{position:absolute;inset:0;animation:drift 18s ease-in-out infinite alternate}
+  @keyframes drift{from{transform:scale(1) translate(0,0)}to{transform:scale(1.14) translate(-2%,-2%)}}
+  .wpcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .wpcard .name{position:absolute;inset:auto 0 0 0;padding:16px 9px 7px;background:linear-gradient(to top,rgba(0,0,0,.92),transparent);font-size:.66rem;color:#fff}
+  .wpcard .fav{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:7px;background:rgba(0,0,0,.55);font-size:12px;display:grid;place-items:center}
+  .pfoot{display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--line);flex-wrap:wrap}
+
+  .toast{position:fixed;right:20px;bottom:80px;z-index:500;display:flex;flex-direction:column;gap:8px}
+  .tst{width:280px;padding:11px 14px;border-radius:12px;background:rgba(14,11,20,.96);border:1px solid rgba(168,85,247,.4);
+    box-shadow:0 18px 40px rgba(0,0,0,.7),0 0 22px rgba(168,85,247,.2);animation:pop .3s ease both;font-size:.74rem}
+
+  /* personalities */
+  #os[data-theme="windows11"] .dock{left:12px;right:12px;translate:0 0;width:auto;justify-content:center;border-radius:10px;border-color:rgba(59,130,246,.5)}
+  #os[data-theme="macos"] .dock{border-radius:24px;padding:10px 16px;background:rgba(24,22,30,.6);border-color:rgba(255,255,255,.18)}
+  #os[data-theme="macos"] .win{inset:38px 10px 10px 10px;border-radius:12px;overflow:hidden;border:1px solid #2f2a38}
+  @media(max-width:1000px){.widgets{display:none}}
+</style>
+</head>
+<body>
+
+<div class="aura-bg" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp">
+    <span class="sp-ring" aria-hidden="true"></span>
+    <h1>DOUNIA<b>OS</b></h1>
+    <p>aura system · v3</p>
+    <div class="sp-line"><i></i></div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<section id="login">
+  <div class="brand">DOUNIA<b>OS</b></div>
+  <div class="card">
+    <div class="pfp" id="pfp">
+      <img src="os/dounia-car-avatar.png" alt="Dounia" onerror="this.outerHTML='<span>D</span>'" />
+    </div>
+    <h1>Dounia</h1>
+    <small>Sesión local · sin contraseña</small>
+    <button class="enter" onclick="enter()">Entrar como Dounia</button>
+  </div>
+  <div class="foot"><span id="lTime">--:--</span><span id="lDate">—</span></div>
+</section>
+
+<!-- DESKTOP -->
+<div id="os" data-theme="gamer">
+  <div class="hud" id="hudDay"></div>
+  <div class="tray">
+    <div><b id="clock">--:--</b><small id="today">—</small></div>
+    <button class="tbtn" onclick="openWp()" title="Fondos">🖼️</button>
+    <button class="tbtn" onclick="cycleTheme()" title="Estilo">🖥️</button>
+    <button class="tbtn" onclick="lock()" title="Bloquear">🔒</button>
+  </div>
+  <div class="icons" id="icons"></div>
+  <aside class="widgets">
+    <div class="widget"><span class="lbl">Hora local</span><div class="big" id="wClock">--:--</div><span class="sub" id="wDate">—</span></div>
+    <div class="widget"><div style="display:flex;align-items:center"><span class="lbl">Sistema</span><span class="dot"></span></div>
+      <div class="big" style="font-size:1rem;margin-top:6px">DOUNIAOS</div><span class="sub">Fondo vivo · aura activa · 3 estilos</span></div>
+    <div class="widget"><span class="lbl">Fondo actual</span><div class="big" style="font-size:1rem;margin-top:6px" id="wWall">Aurora viva</div>
+      <span class="sub">Cámbialo desde 🖼️ en la bandeja</span></div>
+  </aside>
+  <nav class="dock" id="dock"></nav>
+  <div id="windows"></div>
+</div>
+
+<!-- WALLPAPERS -->
+<div id="wp"><div class="panel">
+  <div class="phead"><h2>Estudio de fondos</h2><span class="sp"></span><button class="tool" onclick="closeWp()">Cerrar</button></div>
+  <div class="tabs" id="wpTabs"></div>
+  <div class="wgrid" id="wpGrid"></div>
+  <div class="pfoot">
+    <button class="btn primary" onclick="applySel()">Aplicar fondo</button>
+    <button class="btn" onclick="favSel()">★ Favorito</button>
+    <button class="btn" onclick="filterWalls('fav')">Solo favoritos</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SI=(s,c)=>`https://cdn.simpleicons.org/${s}/${c}`;
+const ICO=d=>`https://www.google.com/s2/favicons?domain=${d}&sz=128`;
+const APPS=[
+ {id:"astra",name:"Astra Proxy",icon:ICO("drfrost.site"),url:"https://drfrost.site",emb:false},
+ {id:"proxy",name:"Proxy Hub",icon:ICO("croxyproxy.com"),url:"https://tungtunglab.nekoweb.org",emb:false},
+ {id:"ghost",name:"GhostCloud",icon:ICO("cineby.tech"),url:"https://ghost-mathmulti.zeoghost.workers.dev",emb:false},
+ {id:"cineby",name:"Cineby",icon:ICO("cineby.tech"),url:"https://cineby.tech",emb:false},
+ {id:"games",name:"HTML Games",icon:SI("playstation","FFFFFF"),url:"https://html5.gamedistribution.com/",emb:true},
+ {id:"xbox",name:"Racoon Cloud",icon:ICO("xbox.com"),url:"https://www.xbox.com/play",emb:false},
+ {id:"vm",name:"Virtual PC",icon:ICO("onworks.net"),url:"https://www.onworks.net/",emb:true},
+ {id:"snack",name:"Snack Expo",icon:ICO("expo.dev"),url:"https://snack.expo.dev/",emb:true},
+ {id:"tiktok",name:"TikTok",icon:ICO("tiktok.com"),url:"https://www.tiktok.com/",emb:false},
+ {id:"insta",name:"Instagram",icon:ICO("instagram.com"),url:"https://www.instagram.com/",emb:false},
+ {id:"x",name:"X",icon:ICO("x.com"),url:"https://x.com/",emb:false},
+ {id:"yt",name:"YouTube",icon:SI("youtube","FF0000"),url:"https://www.youtube.com/",emb:false},
+ {id:"twitch",name:"Twitch",icon:SI("twitch","9146FF"),url:"https://www.twitch.tv/",emb:false},
+ {id:"spotify",name:"Spotify",icon:SI("spotify","1DB954"),url:"https://open.spotify.com/",emb:false},
+ {id:"netflix",name:"Netflix",icon:SI("netflix","E50914"),url:"https://www.netflix.com/",emb:false},
+ {id:"crunchy",name:"Crunchyroll",icon:SI("crunchyroll","F47521"),url:"https://www.crunchyroll.com/",emb:false},
+ {id:"pluto",name:"Pluto TV",icon:ICO("pluto.tv"),url:"https://pluto.tv/",emb:false},
+ {id:"wiki",name:"Wikipedia",icon:SI("wikipedia","FFFFFF"),url:"https://es.wikipedia.org/",emb:true},
+ {id:"figma",name:"Figma",icon:ICO("figma.com"),url:"https://www.figma.com/",emb:false},
+ {id:"notion",name:"Notion",icon:ICO("notion.so"),url:"https://www.notion.so/",emb:false},
+ {id:"chatgpt",name:"ChatGPT",icon:ICO("openai.com"),url:"https://chat.openai.com/",emb:false},
+ {id:"discord",name:"Discord",icon:SI("discord","5865F2"),url:"https://discord.com/app",emb:false}
+];
+const GRADS=[
+ ["Aurora viva","radial-gradient(120% 100% at 20% 0%,#2a1145 0%,#0d0716 45%,#020104 100%)"],
+ ["Malla morada","conic-gradient(from 210deg at 65% 35%,#7c3aed,#0b0713,#22d3ee,#7c3aed)"],
+ ["Viaje estelar","radial-gradient(80% 80% at 80% 10%,#c026d3 0%,#1a0b2e 45%,#030204 100%)"],
+ ["Pulso neón","linear-gradient(135deg,#0b0713 0%,#3b0f63 45%,#06b6d4 130%)"],
+ ["Olas de luz","radial-gradient(100% 100% at 15% 85%,#a855f7 0%,#120820 50%,#040306 100%)"],
+ ["Rejilla retro","linear-gradient(180deg,#1b0a2e 0%,#07030d 60%,#020103 100%)"],
+ ["Humo violeta","radial-gradient(120% 80% at 60% 20%,#6d28d9 0%,#150a24 40%,#030205 100%)"],
+ ["Coche Tokyo","radial-gradient(90% 90% at 80% 20%,#7c3aed 0%,#1b0d2c 45%,#030205 100%)"]
+];
+const IMGS=["aura-tokyo-race","v3-aurora-city","v3-violet-silk","v3-space-orbs","v3-neon-rain","v3-molten-chrome","v3-crystal-cave"];
+const store={get(k,d){try{const v=localStorage.getItem("douniaos."+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("douniaos."+k,JSON.stringify(v))}catch(e){}}};
+let favs=store.get("favs",[]),theme=store.get("theme","gamer"),sel=null,tab="all";
+const WALLS=[...GRADS.map(([name,css],i)=>({id:"g"+i,name,type:"grad",src:css,cat:"vivos"})),
+  ...IMGS.map(id=>({id,name:id.replace(/^v3-/,"").replace(/-/g," "),type:"img",src:"wallpapers/"+id+".webp",cat:"imagenes"}))];
+
+function renderWall(el,w){
+  el.style.background=w.type==="grad"?w.src:"#050408";
+  if(w.type==="img"){el.style.backgroundImage=`url("${w.src}")`;el.style.backgroundSize="cover";el.style.backgroundPosition="center";}
+}
+function currentWall(){return WALLS.find(w=>w.id===store.get("wall","g0"))||WALLS[0]}
+function apply(w){renderWall(document.getElementById("os"),w);store.set("wall",w.id);
+  document.getElementById("wWall").textContent=w.name;toast("Fondo aplicado",w.name);}
+function openWp(){document.getElementById("wp").classList.add("on");renderTabs();renderWalls()}
+function closeWp(){document.getElementById("wp").classList.remove("on")}
+function renderTabs(){
+  const t=[["all","Todos"],["vivos","En movimiento"],["imagenes","Imágenes"],["fav","Favoritos"]];
+  document.getElementById("wpTabs").innerHTML=t.map(([id,label])=>`<button class="chip ${tab===id?"on":""}" onclick="filterWalls('${id}')">${label}</button>`).join("");
+}
+function filterWalls(id){tab=id;renderTabs();renderWalls()}
+function renderWalls(){
+  const list=tab==="all"?WALLS:tab==="fav"?WALLS.filter(w=>favs.includes(w.id)):WALLS.filter(w=>w.cat===tab);
+  document.getElementById("wpGrid").innerHTML=list.map(w=>{
+    const media=w.type==="grad"?`<div class="sw" style="background:${w.src}"></div>`:`<img class="sw" src="${w.src}" alt="">`;
+    return `<div class="wpcard ${sel&&sel.id===w.id?"on":""}" onclick="selectWall('${w.id}')">
+      ${media}<button class="fav" onclick="event.stopPropagation();favWall('${w.id}')" style="color:${favs.includes(w.id)?"#fbbf24":"#fff"}">★</button>
+      <span class="name">${w.name}</span></div>`;
+  }).join("")||`<p style="color:#71717a;font-size:.8rem">Sin favoritos todavía.</p>`;
+}
+function selectWall(id){sel=WALLS.find(w=>w.id===id);renderWalls()}
+function favWall(id){favs=favs.includes(id)?favs.filter(x=>x!==id):[...favs,id];store.set("favs",favs);renderWalls();toast("Favoritos",favs.includes(id)?"Añadido":"Quitado")}
+function favSel(){if(sel)favWall(sel.id)}
+function applySel(){if(!sel){toast("Fondos","Elige uno primero");return}apply(sel)}
+
+function openApp(id){
+  const app=APPS.find(a=>a.id===id); if(!app)return;
+  const el=document.createElement("section"); el.className="win";
+  el.innerHTML=`<div class="wbar"><img src="${app.icon}" alt=""><strong>${app.name}</strong><div class="tools">
+      <a class="tool" href="${app.url}" target="_blank" rel="noreferrer">Abrir ↗</a>
+      <button class="tool" onclick="this.closest('.win').remove()">Cerrar ✕</button></div></div>
+    <div class="wbody">${app.emb?`<iframe src="${app.url}" title="${app.name}" allow="autoplay;fullscreen;gamepad"></iframe>`:
+      `<div class="center"><img src="${app.icon}" alt=""><h2>${app.name}</h2>
+       <p>Esta web no permite incrustarse. En este archivo se abre en una pestaña; en DOUNIAOS online se carga con el proxy del sistema.</p>
+       <div class="row"><a class="btn primary" href="${app.url}" target="_blank" rel="noreferrer">Abrir ahora</a>
+       <button class="btn" onclick="this.closest('.win').remove()">Volver</button></div></div>`}</div>`;
+  document.getElementById("windows").appendChild(el);
+}
+function renderApps(){
+  document.getElementById("icons").innerHTML=APPS.map(a=>`<button class="icon" onclick="openApp('${a.id}')" title="${a.name}">
+      <img src="${a.icon}" alt="${a.name}" onerror="this.style.visibility='hidden'"><span>${a.name}</span></button>`).join("");
+  document.getElementById("dock").innerHTML=APPS.slice(0,9).map(a=>`<button class="d" onclick="openApp('${a.id}')">
+      <img src="${a.icon}" alt=""><span class="tip">${a.name}</span></button>`).join("")
+    +`<button class="d" onclick="openWp()"><span style="font-size:17px">🖼️</span><span class="tip">Fondos</span></button>`;
+}
+
+const DAYS=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const MONTHS=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function tick(){
+  const d=new Date(),t=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+  const date=d.getDate()+" "+MONTHS[d.getMonth()]+" "+d.getFullYear();
+  ["clock","wClock","lTime"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t});
+  const h=document.getElementById("hudDay");if(h)h.textContent=DAYS[d.getDay()].toUpperCase();
+  const td=document.getElementById("today");if(td)td.textContent=date.slice(0,12);
+  const wd=document.getElementById("wDate");if(wd)wd.textContent=DAYS[d.getDay()]+" · "+date;
+  const ld=document.getElementById("lDate");if(ld)ld.textContent=date;
+}
+setInterval(tick,15000);
+
+const splash=document.getElementById("splash"),login=document.getElementById("login");
+setTimeout(()=>{splash.classList.add("out");login.classList.add("on");setTimeout(()=>splash.remove(),800)},2600);
+
+function enter(){
+  login.classList.remove("on");
+  const os=document.getElementById("os");os.classList.add("on");
+  renderApps();apply(currentWall());applyTheme();tick();
+  toast("Bienvenida, Dounia","DOUNIAOS · toca 🖼️ para cambiar el fondo");
+}
+function lock(){document.getElementById("os").classList.remove("on");login.classList.add("on")}
+function cycleTheme(){const l=["gamer","windows11","macos"];theme=l[(l.indexOf(theme)+1)%l.length];store.set("theme",theme);applyTheme();
+  toast("Estilo aplicado",theme==="gamer"?"PC Gamer":theme==="macos"?"macOS":"Windows 11")}
+function applyTheme(){document.getElementById("os").dataset.theme=theme}
+function toast(title,body){
+  const box=document.getElementById("toast"),el=document.createElement("div");
+  el.className="tst";el.innerHTML="<strong>"+title+"</strong><div style='color:#a1a1aa;font-size:.7rem;margin-top:3px'>"+body+"</div>";
+  box.appendChild(el);setTimeout(()=>el.remove(),4200);
+}
+window.addEventListener("keydown",e=>{if(e.key==="Escape")closeWp()});
+tick();
+</script>
+</body>
+</html>
